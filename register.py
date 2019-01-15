@@ -2,101 +2,113 @@ import requests
 import urllib
 import mechanize
 from bs4 import BeautifulSoup
-MSU_USERNAME = "######" # Do not add @morgan.edu
-MSU_PASSWORD = "######"
-TERM_IN = "201930" # Spring 2019
-SUBJECT = "CEGR"
-COURSE_ID = 106
-GOAL_CRN = '12345'
-logged_in = False
+
+def getCourseInfo():
+    valid_input = False
+    while not valid_input:
+        data = str(raw_input("Please enter the abbreviated course id and course number separated by a space \n for example 'ENGR 101'\n"))
+        SUBJECT, COURSE_ID = data.split()
+        try: 
+            _ = int(COURSE_ID)
+            valid_input = True
+        except:
+            print("Invalid Input Retry...\n")
+    valid_input = False
+    while not valid_input:
+        data = str(raw_input("Please enter the desired course number for {} {} \n for example '17225'\n".format(SUBJECT,COURSE_ID)))
+        CRN = data
+        try: 
+            if(len(data)==5):
+                _ = int(COURSE_ID)
+                valid_input = True
+            else:
+                raise(ValueError)
+        except:
+            print("Invalid Input Retry...\n")
+    return SUBJECT.upper(), COURSE_ID ,CRN
+
+def getLoginInfo():
+    username = raw_input(" Enter your MSU Websis username \n Do not add @morgan.edu\n")
+    password = raw_input(" Enter your MSU Websis password \n Do not add @morgan.edu\n")
+    return username, password
+
+def ConfirmInfo(MSU_USERNAME, MSU_PASSWORD, SUBJECT, COURSE_ID, CRN):
+    warning = """Please be aware that this software has no checks in order to ensure that the course information entered is valid. please take this time to thoroughly check the information you've entered \n""".upper()
+    print(warning)
+    print("MSU_USERNAME: {}".format(MSU_USERNAME))
+    print("MSU_PASSWORD: {}".format(MSU_PASSWORD))
+    print("SUBJECT: {}".format(SUBJECT))
+    print("COURSE_ID: {}".format(COURSE_ID))
+    print("CRN: {}".format(CRN))
+    while True:
+        inr = raw_input("Is this all Correct (y/N)")
+        if inr in "yY":
+            return True 
+        elif inr in "nN":
+            return False
+
+def get_courses_page(br_session,TERM_IN,SUBJECT,COURSE_ID):
+    #br_session must be logged in
+    get_course_url = "https://lbssbnprod.morgan.edu/nprod/bwskfcls.P_GetCrse"
+    # Do not modify GenericParams
+    GenericParams = {"SEL_TITLE":"","BEGIN_HH":"0", "BEGIN_MI":"0", "BEGIN_AP":"a", "SEL_DAY":"dummy", "SEL_PTRM":"dummy", "END_HH":"0", "END_MI":"0", "END_AP":"a", 
+    "SEL_CAMP":"dummy", "SEL_SCHD":"dummy", "SEL_SESS":"dummy", "SEL_INSTR":"dummy", "SEL_INSTR":"%", "SEL_ATTR":"dummy", "SEL_ATTR":"%", "SEL_LEVL":"dummy", "SEL_LEVL":"%", 
+    "SEL_INSM":"dummy", "sel_dunt_code":"", "sel_dunt_unit":"", "call_value_in":"", "rsts":"dummy", "crn":"dummy", "path":"1", "SUB_BTN":"View Sections"}
+    # These need to be kept seperate for it to work
+    UserSpecifiedParams1 = {"term_in": TERM_IN,"sel_subj":"dummy"}
+    UserSpecifiedParams2 = {"sel_subj": SUBJECT, "SEL_CRSE": COURSE_ID}
+
+    GenericParamsEncoded = urllib.urlencode(GenericParams)
+    UserSpecifiedParamsEncoded = urllib.urlencode(UserSpecifiedParams1) + "&" + urllib.urlencode(UserSpecifiedParams2)
+    AllParamsEncoded = UserSpecifiedParamsEncoded + "&" + GenericParamsEncoded#urllib.urlencode(AllParams)
+    full_url = get_course_url + "?" + AllParamsEncoded
+    res = br_session.open(full_url)
+    return res.read()
+
+me = True
+if me:
+    MSU_USERNAME, MSU_PASSWORD = "niwal7", "########" 
+    TERM_IN = "201930" 
+    SUBJECT, COURSE_ID, CRN  = "CEGR","106","17225" 
+else:
+    begin = False 
+    while not begin:
+        MSU_USERNAME, MSU_PASSWORD = getLoginInfo()
+        TERM_IN = "201930" # Spring 2019
+        SUBJECT, COURSE_ID, CRN  = getCourseInfo()
+        begin = ConfirmInfo(MSU_USERNAME, MSU_PASSWORD,SUBJECT, COURSE_ID, CRN)
+print("Beggining...")
 login_url = "https://lbapp1nprod.morgan.edu/ssomanager/c/SSB"
 br = mechanize.Browser()
 br.set_handle_robots(False) # ignore robots
-fails = 0 
-while not logged_in:
-    fails+=1
-    if fails > 2:
-        print("Login Errors") 
-        break
-    br.open(login_url)
-    br.select_form(id="loginForm")
-    br["password"] = MSU_PASSWORD 
-    br["username"] = MSU_USERNAME
-    br.submit()
-    #Add Check
-    logged_in = True
+
+br.open(login_url)
+br.select_form(id="loginForm")
+br["password"] = MSU_PASSWORD 
+br["username"] = MSU_USERNAME
+br.submit()
 print("Logged In")
 
-get_course_url = "https://lbssbnprod.morgan.edu/nprod/bwskfcls.P_GetCrse"
-GenericParams = {
-    "SEL_TITLE":"",
-    "BEGIN_HH":"0", 
-    "BEGIN_MI":"0", 
-    "BEGIN_AP":"a", 
-    "SEL_DAY":"dummy", 
-    "SEL_PTRM":"dummy", 
-    "END_HH":"0", 
-    "END_MI":"0", 
-    "END_AP":"a", 
-    "SEL_CAMP":"dummy", 
-    "SEL_SCHD":"dummy", 
-    "SEL_SESS":"dummy", 
-    "SEL_INSTR":"dummy", 
-    "SEL_INSTR":"%", 
-    "SEL_ATTR":"dummy", 
-    "SEL_ATTR":"%", 
-    "SEL_LEVL":"dummy", 
-    "SEL_LEVL":"%", 
-    "SEL_INSM":"dummy", 
-    "sel_dunt_code":"", 
-    "sel_dunt_unit":"", 
-    "call_value_in":"", 
-    "rsts":"dummy", 
-    "crn":"dummy", 
-    "path":"1", 
-    "SUB_BTN":"View Sections"}
-UserSpecifiedParams1 = {
-    "term_in": TERM_IN,
-    "sel_subj":"dummy"}
-UserSpecifiedParams2 = {
-    "sel_subj": SUBJECT,
-    "SEL_CRSE": COURSE_ID}
-
-GenericParamsEncoded = urllib.urlencode(GenericParams)
-UserSpecifiedParamsEncoded = urllib.urlencode(UserSpecifiedParams1) + "&" + urllib.urlencode(UserSpecifiedParams2)
-AllParamsEncoded = UserSpecifiedParamsEncoded + "&" + GenericParamsEncoded#urllib.urlencode(AllParams)
-full_url = get_course_url + "?" + AllParamsEncoded
-res = br.open(full_url)
-
-html = res.read() # Url for the lists of the courses requested
+html = get_courses_page(br,TERM_IN,SUBJECT,COURSE_ID) # Url for the lists of the courses requested
 
 soup = BeautifulSoup(html,features="html5lib")
 table = soup.find("table", attrs={"summary":"This layout table is used to present the sections found"})
-available_courses = set()
-entries = []
 rows = table.find_all("tr")[2:]
 
-for j in range(0,len(rows),22):
-    entry = []
-    for i in range(22):
-        try:
-            #print(rows[j+i])
-            entry.append(str(rows[j+i].text[15:-4]))
-        except:
-            pass
-    entries.append(entry)
-for entr in entries[0]:
-    data = entr.split('\n')
-    if data[0] != 'heet':
-        if int(data[11]) > 0:
-            print("{} {} CRN: {} is available".format(data[1],data[2],data[0]))
-            available_courses.add(data[0])
-        else:
-            print("{} {} CRN: {} is not available".format(data[1],data[2],data[0]))
-    elif data[14] > 0: # Output Fails
-        print("{} {} CRN: {} is available".format(data[4],data[5],data[3]))
+for row in rows:
+    if row == None:
+        continue
+    current_course_info = []
+    lines = str(row).split("\n")
+    for line in lines:
+        entry = BeautifulSoup(line,features="html5lib")
+        data = entry.text
+        if len(data) == 0:
+            continue
+        current_course_info.append(data)
+    if current_course_info[0] == "C":
+        print("{} {} CRN: {} is full ".format(current_course_info[2],current_course_info[3],current_course_info[1]))
     else:
-        print("{} {} CRN: {} is not available".format(data[4],data[5],data[3]))
-
-print("###\n"+full_url)
-
+        print("{} {} CRN: {} has {} spots left".format(current_course_info[2],current_course_info[3],current_course_info[1],current_course_info[12]))
+        if current_course_info[1] == CRN:
+            pass
