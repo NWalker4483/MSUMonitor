@@ -85,7 +85,7 @@ def get_courses_page(br_session,TERM_IN,SUBJECT,COURSE_ID):
     res = br_session.open(full_url)
     return res.read()
 
-me = True
+me = False
 if me:
     MSU_USERNAME, MSU_PASSWORD = "niwal7", "######" 
     TERM_IN = "201930" 
@@ -114,7 +114,7 @@ html = get_courses_page(br,TERM_IN,SUBJECT,COURSE_ID) # Url for the lists of the
 soup = BeautifulSoup(html,features="html5lib")
 table = soup.find("table", attrs={"summary":"This layout table is used to present the sections found"})
 rows = table.find_all("tr")[2:]
-
+found = False
 for row in rows:
     if row == None:
         continue
@@ -131,4 +131,7 @@ for row in rows:
     else:
         print("{} {} CRN: {} has {} spots left".format(current_course_info[2],current_course_info[3],current_course_info[1],current_course_info[12]))
         if current_course_info[1] == CRN:
+            found = True
             print("Requested crn availability was found attempting registration...")
+if not found:
+    print("The requested course was not available Retrying...")
