@@ -2,15 +2,13 @@ import requests
 import urllib
 import mechanize
 from bs4 import BeautifulSoup
-# cython main.pyx --embed
-# gcc -Os -I /usr/include/python2.7m -o main main.c -lpython2.7m -lpthread -lm -lutil -ldl
 
 def getCourseInfo():
     valid_input = False
     while not valid_input:
-        data = str(raw_input("Please enter the abbreviated course id and course number separated by a space \n for example 'ENGR 101'\n"))
-        SUBJECT, COURSE_ID = data.split()
         try: 
+            data = str(raw_input("Please enter the abbreviated course id and course number separated by a space \n for example 'ENGR 101'\n"))
+            SUBJECT, COURSE_ID = data.split()
             _ = int(COURSE_ID)
             valid_input = True
         except:
