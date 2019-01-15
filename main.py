@@ -2,6 +2,8 @@ import requests
 import urllib
 import mechanize
 from bs4 import BeautifulSoup
+# cython main.pyx --embed
+# gcc -Os -I /usr/include/python2.7m -o main main.c -lpython2.7m -lpthread -lm -lutil -ldl
 
 def getCourseInfo():
     valid_input = False
@@ -47,6 +49,24 @@ def ConfirmInfo(MSU_USERNAME, MSU_PASSWORD, SUBJECT, COURSE_ID, CRN):
         elif inr in "nN":
             return False
 
+def register_for_course(br_session,TERM_IN,SUBJECT,COURSE_ID):
+    #br_session must be logged in
+    get_course_url = "https://lbssbnprod.morgan.edu/nprod/bwskfcls.P_GetCrse"
+    # Do not modify GenericParams
+    GenericParams = {"SEL_TITLE":"","BEGIN_HH":"0", "BEGIN_MI":"0", "BEGIN_AP":"a", "SEL_DAY":"dummy", "SEL_PTRM":"dummy", "END_HH":"0", "END_MI":"0", "END_AP":"a", 
+    "SEL_CAMP":"dummy", "SEL_SCHD":"dummy", "SEL_SESS":"dummy", "SEL_INSTR":"dummy", "SEL_INSTR":"%", "SEL_ATTR":"dummy", "SEL_ATTR":"%", "SEL_LEVL":"dummy", "SEL_LEVL":"%", 
+    "SEL_INSM":"dummy", "sel_dunt_code":"", "sel_dunt_unit":"", "call_value_in":"", "rsts":"dummy", "crn":"dummy", "path":"1", "SUB_BTN":"View Sections"}
+    # These need to be kept seperate for it to work
+    UserSpecifiedParams1 = {"term_in": TERM_IN,"sel_subj":"dummy"}
+    UserSpecifiedParams2 = {"sel_subj": SUBJECT, "SEL_CRSE": COURSE_ID}
+
+    GenericParamsEncoded = urllib.urlencode(GenericParams)
+    UserSpecifiedParamsEncoded = urllib.urlencode(UserSpecifiedParams1) + "&" + urllib.urlencode(UserSpecifiedParams2)
+    AllParamsEncoded = UserSpecifiedParamsEncoded + "&" + GenericParamsEncoded
+    full_url = get_course_url + "?" + AllParamsEncoded
+    res = br_session.open(full_url)
+    return res.read()
+
 def get_courses_page(br_session,TERM_IN,SUBJECT,COURSE_ID):
     #br_session must be logged in
     get_course_url = "https://lbssbnprod.morgan.edu/nprod/bwskfcls.P_GetCrse"
@@ -60,14 +80,14 @@ def get_courses_page(br_session,TERM_IN,SUBJECT,COURSE_ID):
 
     GenericParamsEncoded = urllib.urlencode(GenericParams)
     UserSpecifiedParamsEncoded = urllib.urlencode(UserSpecifiedParams1) + "&" + urllib.urlencode(UserSpecifiedParams2)
-    AllParamsEncoded = UserSpecifiedParamsEncoded + "&" + GenericParamsEncoded#urllib.urlencode(AllParams)
+    AllParamsEncoded = UserSpecifiedParamsEncoded + "&" + GenericParamsEncoded
     full_url = get_course_url + "?" + AllParamsEncoded
     res = br_session.open(full_url)
     return res.read()
 
 me = True
 if me:
-    MSU_USERNAME, MSU_PASSWORD = "niwal7", "########" 
+    MSU_USERNAME, MSU_PASSWORD = "niwal7", "######" 
     TERM_IN = "201930" 
     SUBJECT, COURSE_ID, CRN  = "CEGR","106","17225" 
 else:
@@ -111,4 +131,4 @@ for row in rows:
     else:
         print("{} {} CRN: {} has {} spots left".format(current_course_info[2],current_course_info[3],current_course_info[1],current_course_info[12]))
         if current_course_info[1] == CRN:
-            pass
+            print("Requested crn availability was found attempting registration...")
