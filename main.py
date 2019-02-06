@@ -83,7 +83,7 @@ def get_courses_page(br_session,TERM_IN,SUBJECT,COURSE_ID):
     res = br_session.open(full_url)
     return res.read()
 
-me = False # Skip Manual Login InputMw00182897
+me = False # Skip Manual Login Input
 if me:
     MSU_USERNAME, MSU_PASSWORD = "mawar9", "###########" 
     TERM_IN = "201930" 
