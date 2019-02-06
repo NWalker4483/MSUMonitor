@@ -28,8 +28,8 @@ def getCourseInfo():
     return SUBJECT.upper(), COURSE_ID ,CRN
 
 def getLoginInfo():
-    username = raw_input(" Enter your MSU Websis username \n Do not add @morgan.edu\n")
-    password = raw_input(" Enter your MSU Websis password \n Do not add @morgan.edu\n")
+    username = raw_input(" Enter your MSU Websis username \n Do not add @morgan.edu\n").strip()
+    password = raw_input(" Enter your MSU Websis password \n Do not add @morgan.edu\n").strip()
     return username, password
 
 def ConfirmInfo(MSU_USERNAME, MSU_PASSWORD, SUBJECT, COURSE_ID, CRN):
@@ -41,7 +41,7 @@ def ConfirmInfo(MSU_USERNAME, MSU_PASSWORD, SUBJECT, COURSE_ID, CRN):
     print("COURSE_ID: {}".format(COURSE_ID))
     print("CRN: {}".format(CRN))
     while True:
-        inr = raw_input("Is this all Correct (y/N)")
+        inr = raw_input("Is this all Correct (y/N)").strip()
         if inr in "yY":
             return True 
         elif inr in "nN":
@@ -83,11 +83,11 @@ def get_courses_page(br_session,TERM_IN,SUBJECT,COURSE_ID):
     res = br_session.open(full_url)
     return res.read()
 
-me = False
+me = False # Skip Manual Login InputMw00182897
 if me:
-    MSU_USERNAME, MSU_PASSWORD = "niwal7", "######" 
+    MSU_USERNAME, MSU_PASSWORD = "mawar9", "###########" 
     TERM_IN = "201930" 
-    SUBJECT, COURSE_ID, CRN  = "CEGR","106","17225" 
+    SUBJECT, COURSE_ID, CRN  = "MATH","241","18067" 
 else:
     begin = False 
     while not begin:
@@ -102,7 +102,7 @@ br.set_handle_robots(False) # ignore robots
 
 br.open(login_url)
 br.select_form(id="loginForm")
-br["password"] = MSU_PASSWORD 
+br["password"] = MSU_PASSWORD# "".join([chr(i) for i in [87, 97, 108, 107, 52, 52, 56, 51]]) #
 br["username"] = MSU_USERNAME
 br.submit()
 print("Logged In")
