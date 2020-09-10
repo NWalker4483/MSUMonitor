@@ -3,11 +3,11 @@ import urllib
 import mechanize
 from bs4 import BeautifulSoup
 
-def getCourseInfo():
+def getCourseInfo(): 
     valid_input = False
     while not valid_input:
         try: 
-            data = str(raw_input("Please enter the abbreviated course id and course number separated by a space \n for example 'ENGR 101'\n"))
+            data = str(input("Please enter the abbreviated course id and course number separated by a space \n for example 'ENGR 101'\n"))
             SUBJECT, COURSE_ID = data.split()
             _ = int(COURSE_ID)
             valid_input = True
@@ -15,7 +15,7 @@ def getCourseInfo():
             print("Invalid Input Retry...\n")
     valid_input = False
     while not valid_input:
-        data = str(raw_input("Please enter the desired course number for {} {} \n for example '17225'\n".format(SUBJECT,COURSE_ID)))
+        data = str(input("Please enter the desired course number for {} {} \n for example '17225'\n".format(SUBJECT,COURSE_ID)))
         CRN = data
         try: 
             if(len(data)==5):
@@ -28,8 +28,8 @@ def getCourseInfo():
     return SUBJECT.upper(), COURSE_ID ,CRN
 
 def getLoginInfo():
-    username = raw_input(" Enter your MSU Websis username \n Do not add @morgan.edu\n").strip()
-    password = raw_input(" Enter your MSU Websis password \n Do not add @morgan.edu\n").strip()
+    username = input(" Enter your MSU Websis username \n Do not add @morgan.edu\n").strip()
+    password = input(" Enter your MSU Websis password \n Do not add @morgan.edu\n").strip()
     return username, password
 
 def ConfirmInfo(MSU_USERNAME, MSU_PASSWORD, SUBJECT, COURSE_ID, CRN):
@@ -41,7 +41,7 @@ def ConfirmInfo(MSU_USERNAME, MSU_PASSWORD, SUBJECT, COURSE_ID, CRN):
     print("COURSE_ID: {}".format(COURSE_ID))
     print("CRN: {}".format(CRN))
     while True:
-        inr = raw_input("Is this all Correct (y/N)").strip()
+        inr = input("Is this all Correct (y/N)").strip()
         if inr in "yY":
             return True 
         elif inr in "nN":
@@ -58,8 +58,8 @@ def register_for_course(br_session,TERM_IN,SUBJECT,COURSE_ID):
     UserSpecifiedParams1 = {"term_in": TERM_IN,"sel_subj":"dummy"}
     UserSpecifiedParams2 = {"sel_subj": SUBJECT, "SEL_CRSE": COURSE_ID}
 
-    GenericParamsEncoded = urllib.urlencode(GenericParams)
-    UserSpecifiedParamsEncoded = urllib.urlencode(UserSpecifiedParams1) + "&" + urllib.urlencode(UserSpecifiedParams2)
+    GenericParamsEncoded = urllib.parse.urlencode(GenericParams)
+    UserSpecifiedParamsEncoded = urllib.parse.urlencode(UserSpecifiedParams1) + "&" + urllib.parse.urlencode(UserSpecifiedParams2)
     AllParamsEncoded = UserSpecifiedParamsEncoded + "&" + GenericParamsEncoded
     full_url = get_course_url + "?" + AllParamsEncoded
     res = br_session.open(full_url)
@@ -76,8 +76,8 @@ def get_courses_page(br_session,TERM_IN,SUBJECT,COURSE_ID):
     UserSpecifiedParams1 = {"term_in": TERM_IN,"sel_subj":"dummy"}
     UserSpecifiedParams2 = {"sel_subj": SUBJECT, "SEL_CRSE": COURSE_ID}
 
-    GenericParamsEncoded = urllib.urlencode(GenericParams)
-    UserSpecifiedParamsEncoded = urllib.urlencode(UserSpecifiedParams1) + "&" + urllib.urlencode(UserSpecifiedParams2)
+    GenericParamsEncoded = urllib.parse.urlencode(GenericParams)
+    UserSpecifiedParamsEncoded = urllib.parse.urlencode(UserSpecifiedParams1) + "&" + urllib.parse.urlencode(UserSpecifiedParams2)
     AllParamsEncoded = UserSpecifiedParamsEncoded + "&" + GenericParamsEncoded
     full_url = get_course_url + "?" + AllParamsEncoded
     res = br_session.open(full_url)
