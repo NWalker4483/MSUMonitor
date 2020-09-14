@@ -8,6 +8,7 @@ on:
   push:
     branches: [ master ]
   pull_request:
+    types: [closed] 
     branches: [ master ]
 jobs:
   repo-sync:
@@ -19,7 +20,7 @@ jobs:
       env:
         SOURCE_REPO: "https://github.com/NWalker4483/AutoRegistration.git"
         SOURCE_BRANCH: "master"
-        DESTINATION_REPO: ${{ secrets.glitch_git_URL }}
+        DESTINATION_REPO: ${{ secrets.GLITCH_GIT_URL }}
         DESTINATION_BRANCH: "master"
       with:
         args: $SOURCE_REPO $SOURCE_BRANCH $DESTINATION_REPO $DESTINATION_BRANCH
