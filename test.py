@@ -8,11 +8,10 @@ class Status:
     TRIED_AND_FAILED = 1
     LOGIN_FAILED = 2
 
-
 class Student:
     login_url = "https://lbapp1nprod.morgan.edu/ssomanager/c/SSB"
 
-    def __init__(self, username, password):
+    def __init__(self, username: str, password: str):
         self.__phone_num = None
         self.__username = username.strip()
         self.__password = password  # ! Shouldn't be plaintext in the future
@@ -23,16 +22,16 @@ class Student:
     def getNeededCourses(self) -> set:
         return self.__courses
 
-    def addNeededCourse(self, TERM_IN, SUBJECT, COURSE_ID, CRN):
+    def addNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str):
         self.__courses.add((TERM_IN, SUBJECT, COURSE_ID, CRN))
 
-    def registerFor(self, TERM_IN, SUBJECT, COURSE_ID):
+    def registerFor(self, CRN: str) -> Status:
         if (not Student.WebsisSessionIsActive(self.br)):
             self.br = Student.LoginToWebsis(self)
-        pass
+        self.notify("Test")
 
     def notify(self, msg: str):
-        print(self.email)
+        print(f"Notified {self.email} of {msg}")
 
     def getLoginInfo(self):
         return self.__username, self.__password
@@ -43,6 +42,7 @@ class Student:
             pass
         except:
             pass
+        return False
 
     @staticmethod
     def LoginToWebsis(student):
@@ -57,17 +57,18 @@ class Student:
         except Exception as e:
             raise(e)
 
+
 class Manager:
     def __init__(self):
         # * Only one user is required to check any given course we use a master user for reliability
-        self.master = Student("niwal7", input("Master Password\n"))
+        self.master = Student("niwal7", "Qfr3*9u9")
         self.__master_sess = Student.LoginToWebsis(self.master)
-        self.__students = dict() # {uname: Student}
+        self.__students = dict()  # {uname: Student}
 
     def CheckCourseAvailability(self):
-        # Aggregate Course Requests 
+        # Aggregate Course Requests
         courses2check = set()  # {(TERM_IN,SUBJECT,COURSE_ID)}
-        crns2check = dict() # {CRN: [Student()]}
+        crns2check = dict()  # {CRN: [Student()]}
         for student in self.__students.values():
             for TERM_IN, SUBJECT, COURSE_ID, CRN in student.getNeededCourses():
                 courses2check.add((TERM_IN, SUBJECT, COURSE_ID))
@@ -75,10 +76,10 @@ class Manager:
                     crns2check[CRN].append(student)
                 else:
                     crns2check[CRN] = [student]
-        # Fufill Course Requests 
+        # Fufill Course Requests
         for TERM_IN, SUBJECT, COURSE_ID in courses2check:
             html = get_courses_page(
-                self.__master_sess, TERM_IN, SUBJECT, COURSE_ID)
+                Student.LoginToWebsis(self.master), TERM_IN, SUBJECT, COURSE_ID)
             soup = BeautifulSoup(html, features="html5lib")
             table = soup.find("table", attrs={
                               "summary": "This layout table is used to present the sections found"})
@@ -100,15 +101,15 @@ class Manager:
                     continue  # Course on this row is full
                 else:
                     if current_course_info[1] in crns2check:
+                        # ? Should be sorted by the order they were added in
                         for student in crns2check[current_course_info[1]]:
-                            student.notify("Test")
+                            student.registerFor(current_course_info[1])
                     print("{} {} CRN: {} has {} spots left".format(
                         current_course_info[2], current_course_info[3], current_course_info[1], current_course_info[12]))
-                    
+
     def AddCourseSubscribtion(self, TERM_IN, SUBJECT, COURSE_ID, CRN, username: str):
-        self.__students[username].addNeededCourse(TERM_IN, SUBJECT, COURSE_ID, CRN)
+        self.__students[username].addNeededCourse(
+            TERM_IN, SUBJECT, COURSE_ID, CRN)
 
     def AddStudent(self, student: Student):
         self.__students[student.getLoginInfo()[0]] = student
-        
-
