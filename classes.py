@@ -38,6 +38,7 @@ class Student:
 
     @staticmethod
     def WebsisSessionIsActive(sess: mechanize.Browser) -> bool:
+        # Check wether a user is properly logged in 
         try:
             pass
         except:
@@ -56,7 +57,6 @@ class Student:
             return br
         except Exception as e:
             raise(e)
-
 
 class Manager:
     def __init__(self):

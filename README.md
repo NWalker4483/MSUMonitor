@@ -10,7 +10,7 @@ Automatically monitor and register for courses when availabilities arise
 * Better Error Handling / Logging
 
 * Scan for term id
-* Deploy Online 
+* Deploy Online with Frontend 
     * Glitch
     * Flask 
 * Add User Security

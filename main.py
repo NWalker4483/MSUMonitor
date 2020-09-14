@@ -2,7 +2,7 @@ import requests
 import urllib
 from bs4 import BeautifulSoup
 from utils import *
-from test import Manager, Student
+from classes import Manager, Student
 import time 
 import auth 
 me = False # Skip Manual Login Input
