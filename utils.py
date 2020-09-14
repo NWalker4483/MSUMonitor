@@ -43,7 +43,7 @@ def ConfirmInfo(MSU_USERNAME, MSU_PASSWORD, SUBJECT, COURSE_ID, CRN):
             return True 
         elif inr in "nN":
             return False
-
+# ! WARN: Totally doesnt work 
 def register_for_course(br_session,TERM_IN,SUBJECT,COURSE_ID):
     #br_session must be logged in
     get_course_url = "https://lbssbnprod.morgan.edu/nprod/bwskfcls.P_GetCrse"
