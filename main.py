@@ -6,7 +6,7 @@ from test import Manager, Student
 
 me = True # Skip Manual Login Input
 if me:
-    MSU_USERNAME, MSU_PASSWORD = "niwal7", "Qfr3*9u9" 
+    MSU_USERNAME, MSU_PASSWORD = "niwal7", input("password")
     TERM_IN = "201930" 
     SUBJECT, COURSE_ID, CRN  = "MATH","241","18067" 
 else:

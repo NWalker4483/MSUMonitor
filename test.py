@@ -60,7 +60,7 @@ class Student:
 class Manager:
     def __init__(self):
         # * Only one user is required to check any given course we use a master user for reliability
-        self.master = Student("niwal7", "Qfr3*9u9")# input("Master Password\n"))
+        self.master = Student("niwal7", input("Master Password\n"))
         self.__master_sess = Student.LoginToWebsis(self.master)
         self.__students = dict() # {uname: Student}
 
