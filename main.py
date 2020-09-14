@@ -15,7 +15,7 @@ else:
         MSU_USERNAME, MSU_PASSWORD = getLoginInfo()
         TERM_IN = "201930" # Spring 2019
         SUBJECT, COURSE_ID, CRN  = getCourseInfo()
-        begin = ConfirmInfo(MSU_USERNAME, MSU_PASSWORD,SUBJECT, COURSE_ID, CRN)
+        begin = ConfirmInfo(MSU_USERNAME, MSU_PASSWORD, SUBJECT, COURSE_ID, CRN)
 
 app = Manager()
 app.AddStudent(Student(MSU_USERNAME, MSU_PASSWORD))
@@ -25,6 +25,6 @@ while True:
         app.CheckCourseAvailability()
         time.sleep(10)
     except KeyboardInterrupt:
-        pass
+        break 
     finally:
         pass
