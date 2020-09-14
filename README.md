@@ -11,6 +11,7 @@ Automatically monitor and register for courses when availabilities arise
 
 * Scan for term id
 * Deploy Online 
-
+    * Glitch
+    * Flask 
 * Add User Security
 * Test Reliability

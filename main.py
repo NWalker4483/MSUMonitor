@@ -4,9 +4,10 @@ from bs4 import BeautifulSoup
 from utils import *
 from test import Manager, Student
 import time 
+import auth 
 me = False # Skip Manual Login Input
 if me:
-    MSU_USERNAME, MSU_PASSWORD = "", ""
+    MSU_USERNAME, MSU_PASSWORD = auth.username, auth.password
     TERM_IN = "201930" 
     SUBJECT, COURSE_ID, CRN  = "MATH","241","18067" 
 else:
