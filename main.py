@@ -2,7 +2,7 @@ import requests
 import urllib
 import mechanize
 from bs4 import BeautifulSoup
-
+1
 def getCourseInfo(): 
     valid_input = False
     while not valid_input:
