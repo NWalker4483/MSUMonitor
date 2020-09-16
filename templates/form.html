@@ -90,9 +90,7 @@
         ul:after {
             clear: both;
         }
-
     </style>
-    <meta content="Microsoft FrontPage 5.0" name="GENERATOR">
 </head>
 
 <body><br><br><br>
@@ -107,14 +105,13 @@
                             <div align="center" height="50" bgcolor="#000080" width="710"
                                 style="width: 737; height: 50"> <b>
                                     <font color="#800000" size="5">
-                                        <a style="text-decoration: none" href="ndefault.asp">
+                                        <a style="text-decoration: none" href="">
                                             <font color="#FFFFFF">Automatic Registration</font>
                                         </a></font>
                                 </b>
-                                <font color="#008000"><br>
-                                    &nbsp;</font>
+                                <br><br>
                                 <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse"
-                                    width="100%" id="AutoNumber1" height="92">
+                                    width="100%" height="92">
                                     <tbody>
                                         <tr>
                                             <td width="33%" bgcolor="#f5f6ce" height="92">&nbsp;</td>
@@ -161,13 +158,20 @@
                                             <a href="http://myonemoney.com/">BankMobile</a>
                                         </b>
                                         at 1-866-309-7452 or 7454 if you have any questions .</font><br>
-                                    </p>
-                                    <p><b>
-                                            <font color="#FF0000">For non-refund checks please print Release
-                                                Form if the Status is AVAILABLE.</font>
-                                        </b></p>
+                                    </p><br>
+                                    <b>
+                                        <font color="#FF0000">
+                                            Server Message:
+                                            {% if message %}
+                                            <p>{{ message }}</p>
+
+                                            {% endif %}
+
+                                    </font>
+                                    </b>
+
                                     <!---------->
-                                    
+
                                     <p>
                                         <label for="username">Morgan Username: Don't add '@morgan.edu'</label>
                                         <input type="text" name="username">
@@ -176,22 +180,18 @@
                                         <label for="password">Morgan Password</label>
                                         <input type="password" name="password">
                                     </p>
-                                    <!-- <ul class="main-navigation">
-                                        <li><a href="#">Course Options</a>
-                                            <ul>
-                                                {%for subject in courses%}
-                                                <li><a href="#">{{subject}}</a>
-                                                    <ul>
-                                                        {%for class in courses[subject]%}
-                                                        <li>{{class}}</li>
-                                                        {%endfor%}
-                                                    </ul>
-                                                    {%endfor%}
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul> -->
-
+                                    <p>
+                                        <label for="course">Course Options</label>
+                                        <select name="course" id="course">
+                                            {%for subject in courses%}
+                                            <optgroup label="{{subject}}">
+                                                {%for class in courses[subject]%}
+                                                <option value="{{subject}} {{class}}">{{subject}} {{class}}</option>
+                                                {%endfor%}
+                                            </optgroup>
+                                            {%endfor%}
+                                        </select>
+                                    </p>
                                     <p>
                                         <label for="crn">Course Registration Number</label>
                                         <input type="text" name="crn">

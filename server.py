@@ -25,8 +25,7 @@ def ProcessCourseSubscribtionForm():
     MSU_USERNAME = request.form['username'].strip()
     MSU_PASSWORD = request.form['password']
     TERM_IN = request.form['trm']
-    SUBJECT = request.form['subj'].upper()
-    COURSE_ID = request.form['cid']
+    SUBJECT, COURSE_ID = request.form["course"].split()
     CRN = request.form['crn']
     # TODO Add Better/More Status Msgs
     new_student = Student(MSU_USERNAME, MSU_PASSWORD)
