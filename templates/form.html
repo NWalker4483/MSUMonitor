@@ -5,11 +5,7 @@
     <title>Login</title>
 </head>
 <body>
-
-    {% if message %}
-        <p>{{ message }}</p>
-    {% endif %}
-
+Subscribe to course 
     <form action="" method="post">
         <p>
             <label for="username">Morgan Username</label>
@@ -21,17 +17,20 @@
         </p>
         <p>
             <label for="subj">Subject | Course ID ex. MATH | 241</label>
-            <input type="text" name="subj">
+            <input type="text" name="subj"> | 
             <input type="text" name="cid">
         </p>
         <p>
             <label for="crn">Course Registration Number</label>
             <input type="text" name="crn">
+            <input type="hidden" value="201930" name="trm">
         </p>
         <p>
             <input type="submit">
         </p>
-    </form>
-
+    </form><!--Check for existing subscriptions -->
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
 </body>
 </html>

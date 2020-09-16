@@ -1,7 +1,11 @@
 # AutoRegistration
 Automatically monitor and register for courses when availabilities arise
+
 ```pip install -r requirements.txt```
 
+```python server.py```
+
+# Working 
 
 # Feature Requests 
 * <del>Multi-User Handling</del>
@@ -13,5 +17,6 @@ Automatically monitor and register for courses when availabilities arise
 * Deploy Online with Frontend 
     * Glitch
     * Flask 
+
 * Add User Security
 * Test Reliability

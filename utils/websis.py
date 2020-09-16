@@ -1,55 +1,7 @@
 from urllib.parse import urlencode
+import mechanize
 
 
-def getCourseInfo():
-    valid_input = False
-    while not valid_input:
-        try:
-            data = str(input(
-                "Please enter the abbreviated course id and course number separated by a space \n for example 'ENGR 101'\n"))
-            SUBJECT, COURSE_ID = data.split()
-            _ = int(COURSE_ID)
-            valid_input = True
-        except:
-            print("Invalid Input Retry...\n")
-    valid_input = False
-    while not valid_input:
-        data = str(input("Please enter the desired course number for {} {} \n for example '17225'\n".format(
-            SUBJECT, COURSE_ID)))
-        CRN = data
-        try:
-            if(len(data) == 5):
-                _ = int(COURSE_ID)
-                valid_input = True
-            else:
-                raise(ValueError)
-        except:
-            print("Invalid Input Retry...\n")
-    return SUBJECT.upper(), COURSE_ID, CRN
-
-
-def getLoginInfo():
-    username = input(
-        " Enter your MSU Websis username \n Do not add @morgan.edu\n").strip()
-    password = input(
-        " Enter your MSU Websis password \n Do not add @morgan.edu\n").strip()
-    return username, password
-
-
-def ConfirmInfo(MSU_USERNAME, MSU_PASSWORD, SUBJECT, COURSE_ID, CRN):
-    warning = """Please be aware that this software has no checks in order to ensure that the course information entered is valid. please take this time to thoroughly check the information you've entered \n""".upper()
-    print(warning)
-    print("MSU_USERNAME: {}".format(MSU_USERNAME))
-    print("MSU_PASSWORD: {}".format(MSU_PASSWORD))
-    print("SUBJECT: {}".format(SUBJECT))
-    print("COURSE_ID: {}".format(COURSE_ID))
-    print("CRN: {}".format(CRN))
-    while True:
-        inr = input("Is this all Correct (y/N)").strip()
-        if inr in "yY":
-            return True
-        elif inr in "nN":
-            return False
 # ! WARN: Totally doesnt work
 
 
@@ -73,7 +25,7 @@ def register_for_course(br_session, TERM_IN, SUBJECT, COURSE_ID):
     return res.read()
 
 
-def get_courses_page(br_session, TERM_IN, SUBJECT, COURSE_ID):
+def get_courses_page(br_session, TERM_IN, SUBJECT, COURSE_ID) -> str:  # html
     # br_session must be logged in
     get_course_url = "https://lbssbnprod.morgan.edu/nprod/bwskfcls.P_GetCrse"
     # Do not modify GenericParams
@@ -91,3 +43,29 @@ def get_courses_page(br_session, TERM_IN, SUBJECT, COURSE_ID):
     full_url = get_course_url + "?" + AllParamsEncoded
     res = br_session.open(full_url)
     return res.read()
+
+
+def get_available_courses(TERM_IN: str) -> list:  # str
+    pass
+
+
+def WebsisSessionIsActive(sess: mechanize.Browser) -> bool:  # NOTE Not Done
+    # Check wether a user is properly logged in
+    try:
+        return True
+    except:
+        pass
+    return False
+
+
+def LoginToWebsis(student):
+    try:
+        br = mechanize.Browser()
+        br.set_handle_robots(False)  # ignore robots
+        br.open(Student.login_url)
+        br.select_form(id="loginForm")
+        br["username"], br["password"] = student.getLoginInfo()
+        br.submit()
+        return br
+    except Exception as e:
+        raise(e)

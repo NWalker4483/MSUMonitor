@@ -1,9 +1,9 @@
 import mechanize
 from bs4 import BeautifulSoup
-from utils import get_courses_page
+import utils.websis as websis
 import auth as auth
-
 class Status:
+    TEST = -1
     TRIED_AND_SUCCEEDED = 0
     TRIED_AND_FAILED = 1
     LOGIN_FAILED = 2
@@ -15,7 +15,7 @@ class Student:
         self.__phone_num = None
         self.__username = username.strip()
         self.__password = password  # ! Shouldn't be plaintext in the future
-        self.__courses = set()
+        self.__courses = set() # set((TERM_IN, SUBJECT, COURSE_ID, CRN))
         self.email = self.__username + "@morgan.edu"
         self.br = None  # Logged In Websis Browser Session
 
@@ -26,9 +26,10 @@ class Student:
         self.__courses.add((TERM_IN, SUBJECT, COURSE_ID, CRN))
 
     def registerFor(self, CRN: str) -> Status:
-        if (not Student.WebsisSessionIsActive(self.br)):
-            self.br = Student.LoginToWebsis(self)
+        if (not websis.WebsisSessionIsActive(self.br)):
+            self.br = websis.LoginToWebsis(self)
         self.notify("Test")
+        return Status.TEST
 
     def notify(self, msg: str):
         print(f"Notified {self.email} of {msg}")
@@ -36,33 +37,11 @@ class Student:
     def getLoginInfo(self):
         return self.__username, self.__password
 
-    @staticmethod
-    def WebsisSessionIsActive(sess: mechanize.Browser) -> bool:
-        # Check wether a user is properly logged in 
-        try:
-            pass
-        except:
-            pass
-        return False
-
-    @staticmethod
-    def LoginToWebsis(student):
-        try:
-            br = mechanize.Browser()
-            br.set_handle_robots(False)  # ignore robots
-            br.open(Student.login_url)
-            br.select_form(id="loginForm")
-            br["username"], br["password"] = student.getLoginInfo()
-            br.submit()
-            return br
-        except Exception as e:
-            raise(e)
-
 class Manager:
     def __init__(self):
         # * Only one user is required to check any given course we use a master user for reliability
         self.master = Student(auth.username, auth.password)
-        self.__master_sess = Student.LoginToWebsis(self.master)
+        self.__master_sess = websis.LoginToWebsis(self.master)
         self.__students = dict()  # {uname: Student}
 
     def CheckCourseAvailability(self):
@@ -78,8 +57,8 @@ class Manager:
                     crns2check[CRN] = [student]
         # Fufill Course Requests
         for TERM_IN, SUBJECT, COURSE_ID in courses2check:
-            html = get_courses_page(
-                Student.LoginToWebsis(self.master), TERM_IN, SUBJECT, COURSE_ID)
+            html = websis.get_courses_page(
+                websis.LoginToWebsis(self.master), TERM_IN, SUBJECT, COURSE_ID)
             soup = BeautifulSoup(html, features="html5lib")
             table = soup.find("table", attrs={
                               "summary": "This layout table is used to present the sections found"})
@@ -113,3 +92,6 @@ class Manager:
 
     def AddStudent(self, student: Student):
         self.__students[student.getLoginInfo()[0]] = student
+    
+    def hasInfoFor(self, username: str):
+        return username in self.__students
