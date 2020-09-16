@@ -1,6 +1,7 @@
 import mechanize
 from bs4 import BeautifulSoup
 import utils.websis as websis
+import utils.notifications as notify
 import auth as auth
 class Status:
     TEST = -1
@@ -13,10 +14,10 @@ class Student:
 
     def __init__(self, username: str, password: str):
         self.__phone_num = None
-        self.__username = username.strip()
+        self.username = username.strip()
         self.__password = password  # ! Shouldn't be plaintext in the future
         self.__courses = set() # set((TERM_IN, SUBJECT, COURSE_ID, CRN))
-        self.email = self.__username + "@morgan.edu"
+        self.email = self.username + "@morgan.edu"
         self.br = None  # Logged In Websis Browser Session
 
     def getNeededCourses(self) -> set:
@@ -26,16 +27,12 @@ class Student:
         self.__courses.add((TERM_IN, SUBJECT, COURSE_ID, CRN))
 
     def registerFor(self, CRN: str) -> Status:
-        if (not websis.WebsisSessionIsActive(self.br)):
+        if (not websis.WebsisSessionIsActive(self.br)): # Don't Log Back in if we dont have to 
             self.br = websis.LoginToWebsis(self)
-        self.notify("Test")
         return Status.TEST
 
-    def notify(self, msg: str):
-        print(f"Notified {self.email} of {msg}")
-
     def getLoginInfo(self):
-        return self.__username, self.__password
+        return self.username, self.__password
 
 class Manager:
     def __init__(self):
@@ -82,16 +79,31 @@ class Manager:
                     if current_course_info[1] in crns2check:
                         # ? Should be sorted by the order they were added in
                         for student in crns2check[current_course_info[1]]:
-                            student.registerFor(current_course_info[1])
-                    print("{} {} CRN: {} has {} spots left".format(
-                        current_course_info[2], current_course_info[3], current_course_info[1], current_course_info[12]))
+                            status = student.registerFor(current_course_info[1])
+                            #notify.SendEmail(student)
+                    
+                    
+                    # print("{} {} CRN: {} has {} spots left".format(
+                    #     current_course_info[2], current_course_info[3], current_course_info[1], current_course_info[12]))
 
     def AddCourseSubscribtion(self, TERM_IN, SUBJECT, COURSE_ID, CRN, username: str):
+        self.__students[username].addNeededCourse(
+            TERM_IN, SUBJECT, COURSE_ID, CRN)
+    
+    def RemoveCourseSubscribtion(self, TERM_IN, SUBJECT, COURSE_ID, CRN, username: str, fufilled = True):
         self.__students[username].addNeededCourse(
             TERM_IN, SUBJECT, COURSE_ID, CRN)
 
     def AddStudent(self, student: Student):
         self.__students[student.getLoginInfo()[0]] = student
+    
+    def RemoveStudent(self, username: str):
+        if (self.hasInfoFor(username)):
+            if (len(self.__students[username].getNeededCourses()) != 0):
+                print(f"WARN: {username} was removed from the registry with {len(self.__students[username].getNeededCourses())} courses unfufilled")
+            del self.__students[username]
+        else:
+            print(f"WARN: Deletion Failed as no info on {username} was found")
     
     def hasInfoFor(self, username: str):
         return username in self.__students
