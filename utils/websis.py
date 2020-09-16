@@ -45,8 +45,11 @@ def get_courses_page(br_session, TERM_IN, SUBJECT, COURSE_ID) -> str:  # html
     return res.read()
 
 
-def get_available_courses(TERM_IN: str) -> list:  # str
-    pass
+def get_available_courses(TERM_IN: str) -> dict:  # str
+    sample = dict({"MATH":["241","201"],
+                   "ENGR":["110","214"],
+                   "COSC":["241","243"]})
+    return sample
 
 
 def WebsisSessionIsActive(sess: mechanize.Browser) -> bool:  # NOTE Not Done

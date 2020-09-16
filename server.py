@@ -16,7 +16,7 @@ app.logger.addHandler(handler)
 @app.route('/')
 def my_form():
     global manager
-    return render_template('form.html')
+    return render_template('form.html',courses = websis.get_available_courses(""))
 
 
 @app.route('/', methods=['POST'])
@@ -56,4 +56,4 @@ def ScheduleWebsisCheck(t=1):
 if __name__ == "__main__":
     manager = Manager()
     ScheduleWebsisCheck(15)# Seconds 
-    app.run()
+    app.run(debug=True)
