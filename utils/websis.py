@@ -59,10 +59,11 @@ def WebsisSessionIsActive(sess: mechanize.Browser) -> bool:  # NOTE Not Done
 
 
 def LoginToWebsis(student):
+    login_url = "https://lbapp1nprod.morgan.edu/ssomanager/c/SSB"
     try:
         br = mechanize.Browser()
         br.set_handle_robots(False)  # ignore robots
-        br.open(Student.login_url)
+        br.open(login_url)
         br.select_form(id="loginForm")
         br["username"], br["password"] = student.getLoginInfo()
         br.submit()

@@ -11,6 +11,7 @@ Automatically monitor and register for courses when availabilities arise
 * <del>Multi-User Handling</del>
 * Check if master session is active 
 * Additional User Notifications
+* Add Logging
 * Better Error Handling / Logging
 
 * Scan for term id

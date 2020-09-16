@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
 </head>
+
 <body>
-Subscribe to course 
-    <form action="" method="post">
+    <form align="center" action="" method="post">
+
+        Subscribe to course
         <p>
             <label for="username">Morgan Username</label>
-            <input type="text" name="username">
+            <input type="text" name="username">Don't add '@morgan.edu'
         </p>
         <p>
             <label for="password">Morgan Password</label>
             <input type="password" name="password">
         </p>
         <p>
-            <label for="subj">Subject | Course ID ex. MATH | 241</label>
-            <input type="text" name="subj"> | 
-            <input type="text" name="cid">
+            <label for="subj">Subject | Course ID</label>
+            <input type="text" name="subj"> |
+            <input type="number" name="cid" maxlength="3"> ex. MATH | 241
         </p>
         <p>
             <label for="crn">Course Registration Number</label>
@@ -28,9 +31,11 @@ Subscribe to course
         <p>
             <input type="submit">
         </p>
-    </form><!--Check for existing subscriptions -->
+    </form>
+    <!--Check for existing subscriptions -->
     {% if message %}
-        <p>{{ message }}</p>
+    <p>{{ message }}</p>
     {% endif %}
 </body>
+
 </html>

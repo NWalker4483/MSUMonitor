@@ -1,11 +1,17 @@
 from classes import Manager, Student
-
+import utils.websis as websis
 from flask import Flask, request, render_template
 import threading
 import auth
+import logging
+import sys 
+import time 
+logging.basicConfig(filename='AutoRegistration.log', format='%(asctime)s - %(levelname)s: %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',level=logging.DEBUG)
 
-app = Flask(__name__)
+handler = logging.StreamHandler(sys.stdout)
 
+app = Flask("AutoRegistration")
+app.logger.addHandler(handler)
 
 @app.route('/')
 def my_form():
@@ -14,9 +20,9 @@ def my_form():
 
 
 @app.route('/', methods=['POST'])
-def my_form_post():
+def ProcessCourseSubscribtionForm():
     global manager
-    MSU_USERNAME = request.form['username']
+    MSU_USERNAME = request.form['username'].strip()
     MSU_PASSWORD = request.form['password']
     TERM_IN = request.form['trm']
     SUBJECT = request.form['subj'].upper()
@@ -27,25 +33,27 @@ def my_form_post():
     msg = f"Added {MSU_USERNAME} to {SUBJECT} {COURSE_ID} : {CRN} list behind {'null'} others"
     if not manager.hasInfoFor(MSU_USERNAME):
         # Validate Login Info
-        if Student.WebsisSessionIsActive(Student.LoginToWebsis(new_student)):
+        if websis.WebsisSessionIsActive(websis.LoginToWebsis(new_student)):
             manager.AddStudent(new_student)
         else:
             msg = "Websis Login Failed Check Info "
-    manager.AddCourseSubscribtion(
-        TERM_IN, SUBJECT, COURSE_ID, CRN, MSU_USERNAME)
+            app.logger.error("Websis Login Failed Check Info ")
+
+    if manager.hasInfoFor(MSU_USERNAME):
+        manager.AddCourseSubscribtion(
+            TERM_IN, SUBJECT, COURSE_ID, CRN, MSU_USERNAME)
+        app.logger.info(msg)
+            
     return render_template('form.html', message=msg)
 
 
-def ScheduleWebsisCall():
+def ScheduleWebsisCheck(t=1):
     global manager
     manager.CheckCourseAvailability()
-    threading.Timer(60, ScheduleWebsisCall).start()
+    threading.Timer(t, ScheduleWebsisCheck).start()
 
 
 if __name__ == "__main__":
-    MSU_USERNAME, MSU_PASSWORD = auth.username, auth.password
-
     manager = Manager()
-
-    ScheduleWebsisCall()
+    ScheduleWebsisCheck(15)# Seconds 
     app.run()

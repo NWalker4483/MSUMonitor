@@ -1,22 +1,26 @@
 import mechanize
 from bs4 import BeautifulSoup
+import logging
+
 import utils.websis as websis
 import utils.notifications as notify
 import auth as auth
+
+log = logging.getLogger("AutoRegistration.sub")
 class Status:
     TEST = -1
     TRIED_AND_SUCCEEDED = 0
     TRIED_AND_FAILED = 1
     LOGIN_FAILED = 2
 
+
 class Student:
-    login_url = "https://lbapp1nprod.morgan.edu/ssomanager/c/SSB"
 
     def __init__(self, username: str, password: str):
         self.__phone_num = None
         self.username = username.strip()
         self.__password = password  # ! Shouldn't be plaintext in the future
-        self.__courses = set() # set((TERM_IN, SUBJECT, COURSE_ID, CRN))
+        self.__courses = set()  # set((TERM_IN, SUBJECT, COURSE_ID, CRN))
         self.email = self.username + "@morgan.edu"
         self.br = None  # Logged In Websis Browser Session
 
@@ -25,14 +29,20 @@ class Student:
 
     def addNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str):
         self.__courses.add((TERM_IN, SUBJECT, COURSE_ID, CRN))
+        # Send Confirmation Email
 
-    def registerFor(self, CRN: str) -> Status:
-        if (not websis.WebsisSessionIsActive(self.br)): # Don't Log Back in if we dont have to 
+    def removeNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str):
+        self.__courses.remove((TERM_IN, SUBJECT, COURSE_ID, CRN))
+        # Send Confirmation Email
+
+    def registerFor(self, CRN: str) -> Status: 
+        if (not websis.WebsisSessionIsActive(self.br)):  # Don't Log Back in if we dont have to
             self.br = websis.LoginToWebsis(self)
-        return Status.TEST
+        return True
 
     def getLoginInfo(self):
         return self.username, self.__password
+
 
 class Manager:
     def __init__(self):
@@ -54,8 +64,11 @@ class Manager:
                     crns2check[CRN] = [student]
         # Fufill Course Requests
         for TERM_IN, SUBJECT, COURSE_ID in courses2check:
+            log.info(
+                f"Checking {TERM_IN} {SUBJECT} {COURSE_ID} for availabilities")
             html = websis.get_courses_page(
                 websis.LoginToWebsis(self.master), TERM_IN, SUBJECT, COURSE_ID)
+            
             soup = BeautifulSoup(html, features="html5lib")
             table = soup.find("table", attrs={
                               "summary": "This layout table is used to present the sections found"})
@@ -79,31 +92,37 @@ class Manager:
                     if current_course_info[1] in crns2check:
                         # ? Should be sorted by the order they were added in
                         for student in crns2check[current_course_info[1]]:
-                            status = student.registerFor(current_course_info[1])
-                            #notify.SendEmail(student)
-                    
-                    
-                    # print("{} {} CRN: {} has {} spots left".format(
-                    #     current_course_info[2], current_course_info[3], current_course_info[1], current_course_info[12]))
+                            succeeded = student.registerFor(
+                                current_course_info[1])
+                            if (succeeded == True):
+                                student.removeNeededCourse(
+                                    TERM_IN, SUBJECT, COURSE_ID, current_course_info[1])
+                            if (len(student.getNeededCourses()) == 0):
+                                self.RemoveStudent(student.username)
 
-    def AddCourseSubscribtion(self, TERM_IN, SUBJECT, COURSE_ID, CRN, username: str):
+    def AddCourseSubscribtion(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str, username: str):
         self.__students[username].addNeededCourse(
             TERM_IN, SUBJECT, COURSE_ID, CRN)
-    
-    def RemoveCourseSubscribtion(self, TERM_IN, SUBJECT, COURSE_ID, CRN, username: str, fufilled = True):
-        self.__students[username].addNeededCourse(
+
+    def RemoveCourseSubscribtion(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str, username: str, fufilled=True):
+        self.__students[username].removeNeededCourse(
             TERM_IN, SUBJECT, COURSE_ID, CRN)
 
     def AddStudent(self, student: Student):
         self.__students[student.getLoginInfo()[0]] = student
-    
+
     def RemoveStudent(self, username: str):
         if (self.hasInfoFor(username)):
             if (len(self.__students[username].getNeededCourses()) != 0):
-                print(f"WARN: {username} was removed from the registry with {len(self.__students[username].getNeededCourses())} courses unfufilled")
+                log.warning(
+                    f"{username} was removed from the registry with {len(self.__students[username].getNeededCourses())} courses unfufilled")
+            else:
+                log.info(
+                    f"{username} was removed from the registry with all courses fuffiled")
             del self.__students[username]
         else:
-            print(f"WARN: Deletion Failed as no info on {username} was found")
-    
+            log.warning(
+                f"Deletion Failed as no info on {username} was found")
+
     def hasInfoFor(self, username: str):
         return username in self.__students
