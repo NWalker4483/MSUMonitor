@@ -18,8 +18,11 @@ def my_form():
     global manager
     return render_template('form.html',courses = websis.get_available_courses(""))
 
+@app.route('/check', methods=['POST'])
+def CheckCourseSubscriptions():
+    global manager
 
-@app.route('/', methods=['POST'])
+@app.route('/subscribe', methods=['POST'])
 def ProcessCourseSubscribtionForm():
     global manager
     MSU_USERNAME = request.form['username'].strip()
@@ -43,10 +46,10 @@ def ProcessCourseSubscribtionForm():
             TERM_IN, SUBJECT, COURSE_ID, CRN, MSU_USERNAME)
         app.logger.info(msg)
             
-    return render_template('form.html', message=msg)
+    return render_template('form.html', message=msg, courses = websis.get_available_courses(""))
 
 
-def ScheduleWebsisCheck(t=1):
+def ScheduleWebsisCheck(t=60):
     global manager
     manager.CheckCourseAvailability()
     threading.Timer(t, ScheduleWebsisCheck).start()
@@ -54,5 +57,5 @@ def ScheduleWebsisCheck(t=1):
 
 if __name__ == "__main__":
     manager = Manager()
-    ScheduleWebsisCheck(15)# Seconds 
+    ScheduleWebsisCheck(60)# Seconds 
     app.run(debug=True)

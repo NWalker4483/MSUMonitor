@@ -7,12 +7,6 @@ import utils.notifications as notify
 import auth as auth
 
 log = logging.getLogger("AutoRegistration.sub")
-class Status:
-    TEST = -1
-    TRIED_AND_SUCCEEDED = 0
-    TRIED_AND_FAILED = 1
-    LOGIN_FAILED = 2
-
 
 class Student:
 
@@ -35,10 +29,10 @@ class Student:
         self.__courses.remove((TERM_IN, SUBJECT, COURSE_ID, CRN))
         # Send Confirmation Email
 
-    def registerFor(self, CRN: str) -> Status: 
+    def registerFor(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str) -> bool:
         if (not websis.WebsisSessionIsActive(self.br)):  # Don't Log Back in if we dont have to
             self.br = websis.LoginToWebsis(self)
-        return True
+        return websis.register_for_course(self.br, TERM_IN, SUBJECT, COURSE_ID, CRN)
 
     def getLoginInfo(self):
         return self.username, self.__password
@@ -68,13 +62,14 @@ class Manager:
                 f"Checking {TERM_IN} {SUBJECT} {COURSE_ID} for availabilities")
             html = websis.get_courses_page(
                 websis.LoginToWebsis(self.master), TERM_IN, SUBJECT, COURSE_ID)
-            
+
             soup = BeautifulSoup(html, features="html5lib")
             table = soup.find("table", attrs={
                               "summary": "This layout table is used to present the sections found"})
             rows = table.find_all("tr")[2:]
 
             # * Needs to be cleaned/commented desperately
+            # * TBH Cant remember why this chunk works
             for row in rows:
                 if row == None:
                     continue
@@ -86,6 +81,7 @@ class Manager:
                     if len(data) == 0:
                         continue
                     current_course_info.append(data)
+            ###########################################
                 if current_course_info[0] == "C":
                     continue  # Course on this row is full
                 else:
