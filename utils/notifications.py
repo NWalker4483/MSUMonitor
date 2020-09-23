@@ -20,6 +20,9 @@ def read_template(filename):
     with open(filename, 'r', encoding='utf-8') as template_file:
         template_file_content = template_file.read()
     return Template(template_file_content)
+    
+def SendEmail(email):
+    pass
 
 def main():
     message_template = read_template('message.txt')
@@ -62,6 +65,3 @@ def main():
     
 if __name__ == '__main__':
     main()
-
-def SendEmail():
-    pass
