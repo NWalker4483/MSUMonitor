@@ -29,8 +29,7 @@ def ProcessCourseSubscribtionForm():
     MSU_PASSWORD = request.form['password']
     TERM_IN = request.form['trm']
     SUBJECT, COURSE_ID = request.form["course"].split()
-    CRN = request.form['crn']
-    # TODO Add Better/More Status Msgs
+    CRN = request.form['crn'] # TODO Add Better/More Status Msgs
     new_student = Student(MSU_USERNAME, MSU_PASSWORD)
     msg = f"Added {MSU_USERNAME} to {SUBJECT} {COURSE_ID} : {CRN} list behind {'null'} others"
     if not manager.hasInfoFor(MSU_USERNAME):
