@@ -1,8 +1,0 @@
-
-Dear ${FIRST_NAME} ${LAST_NAME}, 
-My name is ${MY_NAME} and I am an Electrical Engineering Sophomore at Morgan State University. I am looking for a roommate while in ${LOCATION} from ${START_DATE} to ${END_DATE}. I'd like to live close to the office if possible as I tend to work-in late. I don't smoke and value personal cleanliness and as long as I can walk around I really wont bug you. I'm good with pets and my preferred price range is below or close to 2000 dollars a month. If you dont already have housing commitments and are interested in working with me to find housing please email me at ${MY_ADDRESS} or text me at ${MY_NUMBER}.
-
-Thanks, 
-     ${MY_NAME}
-
-The code used to generate these emails is also available on github@NWalker4483/MailTime
