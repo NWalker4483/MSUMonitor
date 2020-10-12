@@ -8,9 +8,10 @@ import auth as auth
 
 log = logging.getLogger("AutoRegistration.sub")
 
+
 class Student:
 
-    def __init__(self, username: str, password: str):
+    def __init__(self, username: str, password=None):
         self.username = username.strip()
         self.__password = password  # ! Shouldn't be plaintext in the future
         self.__courses = set()  # set((TERM_IN, SUBJECT, COURSE_ID, CRN))
@@ -23,15 +24,18 @@ class Student:
     def addNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str):
         self.__courses.add((TERM_IN, SUBJECT, COURSE_ID, CRN))
         # Send Confirmation Email
-        notify.notifyStudent(self.username, TERM_IN, SUBJECT, COURSE_ID, CRN, 0)
+        notify.notifyStudent(self.username, TERM_IN,
+                             SUBJECT, COURSE_ID, CRN, 0)
 
-    def removeNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str, registred = true: bool):
+    def removeNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str, registred=True):
         self.__courses.remove((TERM_IN, SUBJECT, COURSE_ID, CRN))
         # Send Confirmation Email
         if registred:
-            notify.notifyStudent(self.username, TERM_IN, SUBJECT, COURSE_ID, CRN, 3)
+            notify.notifyStudent(self.username, TERM_IN,
+                                 SUBJECT, COURSE_ID, CRN, 3)
         else:
-            notify.notifyStudent(self.username, TERM_IN, SUBJECT, COURSE_ID, CRN, 4)
+            notify.notifyStudent(self.username, TERM_IN,
+                                 SUBJECT, COURSE_ID, CRN, 4)
 
     def registerFor(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str) -> bool:
         if (not websis.WebsisSessionIsActive(self.br)):  # Don't Log Back in if we dont have to
@@ -92,16 +96,20 @@ class Manager:
                     if current_course_info[1] in crns2check:
                         # ? Should be sorted by the order they were added in
                         for student in crns2check[current_course_info[1]]:
-                            succeeded = student.registerFor(
-                                current_course_info[1])
-                            if (succeeded == True):
-                                student.removeNeededCourse(
-                                    TERM_IN, SUBJECT, COURSE_ID, current_course_info[1])
+                            if student.getLoginInfo()[1] != None:
+                                succeeded = student.registerFor(
+                                    current_course_info[1])
+                                if succeeded == True:
+                                    student.removeNeededCourse(
+                                        TERM_IN, SUBJECT, COURSE_ID, current_course_info[1])
+                                else:  # Notify Student of Failed Registration
+                                    notify.notifyStudent(
+                                        student.username, TERM_IN, SUBJECT, COURSE_ID, current_course_info[1], 4)
+                                if (len(student.getNeededCourses()) == 0):
+                                    self.RemoveStudent(student.username)
                             else:
-                                # Notify Student of Failed Registration 
-                                notify.notifyStudent(student.username, TERM_IN, SUBJECT, COURSE_ID, current_course_info[1], 4)
-                            if (len(student.getNeededCourses()) == 0):
-                                self.RemoveStudent(student.username)
+                                notify.notifyStudent(
+                                    student.username, TERM_IN, SUBJECT, COURSE_ID, current_course_info[1], 2)
 
     def AddCourseSubscribtion(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str, username: str):
         self.__students[username].addNeededCourse(
