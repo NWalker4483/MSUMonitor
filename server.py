@@ -26,8 +26,8 @@ def CheckCourseSubscriptions():
 def ProcessCourseSubscribtionForm():
     global manager
     MSU_USERNAME = request.form['username'].strip()
-    MSU_PASSWORD = request.form['password']
-    TERM_IN = request.form['trm']
+    MSU_PASSWORD = request.form.get('password', None)
+    TERM_IN = websis.CURRENT_TERM_ID
     SUBJECT, COURSE_ID = request.form["course"].split()
     CRN = request.form['crn'] # TODO Add Better/More Status Msgs
     new_student = Student(MSU_USERNAME, MSU_PASSWORD)
@@ -56,6 +56,6 @@ def ScheduleWebsisCheck(t=60):
 
 if __name__ == "__main__":
     manager = Manager()
-    available_courses = websis.get_available_courses(manager.getMasterSess(),"202070")
-    ScheduleWebsisCheck(60)# Seconds 
+    available_courses = websis.get_available_courses(manager.getMasterSess(),websis.CURRENT_TERM_ID)
+    ScheduleWebsisCheck(600)# Seconds 
     app.run(debug=True)
