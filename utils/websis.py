@@ -1,6 +1,8 @@
 from urllib.parse import urlencode
 import mechanize
+from bs4 import BeautifulSoup
 
+CURRENT_TERM_ID = "202070"
 
 def register_for_course(br_session, TERM_IN, SUBJECT, COURSE_ID,CRN):
     # ! WARN: Totally doesnt work
@@ -27,11 +29,17 @@ def get_courses_page(br_session, TERM_IN, SUBJECT, COURSE_ID) -> str:  # html
     return res.read()
 
 
-def get_available_courses(TERM_IN: str) -> dict:  # str
-    sample = dict({"MATH": ["241", "201"],
-                   "ENGR": ["110", "214"],
-                   "COSC": ["241", "243"]})
-    return sample
+def get_available_courses(sess: mechanize.Browser, TERM_IN: str) -> dict:  # str
+    options = dict()
+    sess.open("https://lbssbnprod.morgan.edu/nprod/bwskfcls.p_sel_crse_search")
+
+    sess.select_form(nr=1)
+    sess["p_term"] = [TERM_IN]
+    res = sess.submit()
+    soup = BeautifulSoup(res.read())
+    for option in soup.find("select").find_all('option'):
+        options[option['value']] = ["101"]
+    return options
 
 
 def WebsisSessionIsActive(sess: mechanize.Browser) -> bool:  # NOTE Not Done

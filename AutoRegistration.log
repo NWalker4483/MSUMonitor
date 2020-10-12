@@ -44,3 +44,28 @@
 09/17/2020 09:09:17 AM - INFO:  * Restarting with fsevents reloader
 09/17/2020 09:09:19 AM - WARNING:  * Debugger is active!
 09/17/2020 09:09:19 AM - INFO:  * Debugger PIN: 258-537-197
+10/12/2020 12:04:21 PM - INFO:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+10/12/2020 12:04:21 PM - INFO:  * Restarting with fsevents reloader
+10/12/2020 12:04:23 PM - WARNING:  * Debugger is active!
+10/12/2020 12:04:23 PM - INFO:  * Debugger PIN: 270-996-000
+10/12/2020 12:04:52 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:04:52] "[35m[1mGET / HTTP/1.1[0m" 500 -
+10/12/2020 12:04:52 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:04:52] "[37mGET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 200 -
+10/12/2020 12:04:52 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:04:52] "[37mGET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 200 -
+10/12/2020 12:04:52 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:04:52] "[37mGET /?__debugger__=yes&cmd=resource&f=jquery.js HTTP/1.1[0m" 200 -
+10/12/2020 12:04:52 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:04:52] "[37mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 200 -
+10/12/2020 12:04:52 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:04:52] "[37mGET /?__debugger__=yes&cmd=resource&f=ubuntu.ttf HTTP/1.1[0m" 200 -
+10/12/2020 12:04:52 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:04:52] "[37mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 200 -
+10/12/2020 12:04:54 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:04:54] "[35m[1mGET / HTTP/1.1[0m" 500 -
+10/12/2020 12:04:54 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:04:54] "[37mGET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 200 -
+10/12/2020 12:04:54 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:04:54] "[37mGET /?__debugger__=yes&cmd=resource&f=jquery.js HTTP/1.1[0m" 200 -
+10/12/2020 12:04:54 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:04:54] "[37mGET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 200 -
+10/12/2020 12:04:54 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:04:54] "[37mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 200 -
+10/12/2020 12:04:54 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:04:54] "[37mGET /?__debugger__=yes&cmd=resource&f=ubuntu.ttf HTTP/1.1[0m" 200 -
+10/12/2020 12:05:56 PM - INFO:  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+10/12/2020 12:05:56 PM - INFO:  * Restarting with fsevents reloader
+10/12/2020 12:05:58 PM - WARNING:  * Debugger is active!
+10/12/2020 12:05:58 PM - INFO:  * Debugger PIN: 270-996-000
+10/12/2020 12:05:58 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:05:58] "[37mGET / HTTP/1.1[0m" 200 -
+10/12/2020 12:05:58 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:05:58] "[33mGET /data/css.css HTTP/1.1[0m" 404 -
+10/12/2020 12:05:58 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:05:58] "[37mGET /static/msu.png HTTP/1.1[0m" 200 -
+10/12/2020 12:05:59 PM - INFO: 127.0.0.1 - - [12/Oct/2020 12:05:59] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -

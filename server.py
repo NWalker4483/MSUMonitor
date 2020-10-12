@@ -16,7 +16,7 @@ app.logger.addHandler(handler)
 @app.route('/')
 def my_form():
     global manager
-    return render_template('form.html',courses = websis.get_available_courses(""))
+    return render_template('form.html',courses = available_courses)
 
 @app.route('/check', methods=['POST'])
 def CheckCourseSubscriptions():
@@ -45,7 +45,7 @@ def ProcessCourseSubscribtionForm():
             TERM_IN, SUBJECT, COURSE_ID, CRN, MSU_USERNAME)
         app.logger.info(msg)
             
-    return render_template('form.html', message=msg, courses = websis.get_available_courses(""))
+    return render_template('form.html', message=msg, courses = available_courses)
 
 
 def ScheduleWebsisCheck(t=60):
@@ -56,5 +56,6 @@ def ScheduleWebsisCheck(t=60):
 
 if __name__ == "__main__":
     manager = Manager()
+    available_courses = websis.get_available_courses(manager.getMasterSess(),"202070")
     ScheduleWebsisCheck(60)# Seconds 
     app.run(debug=True)
