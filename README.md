@@ -7,7 +7,7 @@ Automatically monitor and register for courses when availabilities arise
 
 # Tasks 
 ## General 
-* Implement Email sending capability
+* Give users the option to remove a course subscription without successful registration
 * Implement Check ```WebsisSessionIsActive``` Function to check logins
 * Implement course registration in ```register_for_course``` Function
   
@@ -20,9 +20,9 @@ Automatically monitor and register for courses when availabilities arise
 * * Course_registration_unsuccessful.txt # A spot is available and couldn't be taken i.e Prerequsite/ Major of study restrictions
 * * Any other cases you can think of
 ## Nile
-* Create Gmail account for software
 * Implement Scraping of Available Courses in ```get_available_courses``` Function  
 * Implement Scraping of term id
+* Implement Email sending capability
 ## Charnelle 
 * Make automatic registration optional
 * * In its current state auto registration requires that the user enter password to moniter a course, This password is not actually required for monitoring and only for registration by making the registration feature optional we make our software more accessible to users uncomfortable giving us their passwords.

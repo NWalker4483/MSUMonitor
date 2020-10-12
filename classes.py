@@ -23,10 +23,15 @@ class Student:
     def addNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str):
         self.__courses.add((TERM_IN, SUBJECT, COURSE_ID, CRN))
         # Send Confirmation Email
+        notify.notifyStudent(self.username, TERM_IN, SUBJECT, COURSE_ID, CRN, 0)
 
-    def removeNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str):
+    def removeNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str, registred = true: bool):
         self.__courses.remove((TERM_IN, SUBJECT, COURSE_ID, CRN))
         # Send Confirmation Email
+        if registred:
+            notify.notifyStudent(self.username, TERM_IN, SUBJECT, COURSE_ID, CRN, 3)
+        else:
+            notify.notifyStudent(self.username, TERM_IN, SUBJECT, COURSE_ID, CRN, 4)
 
     def registerFor(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str) -> bool:
         if (not websis.WebsisSessionIsActive(self.br)):  # Don't Log Back in if we dont have to
@@ -92,6 +97,9 @@ class Manager:
                             if (succeeded == True):
                                 student.removeNeededCourse(
                                     TERM_IN, SUBJECT, COURSE_ID, current_course_info[1])
+                            else:
+                                # Notify Student of Failed Registration 
+                                notify.notifyStudent(student.username, TERM_IN, SUBJECT, COURSE_ID, current_course_info[1], 4)
                             if (len(student.getNeededCourses()) == 0):
                                 self.RemoveStudent(student.username)
 
