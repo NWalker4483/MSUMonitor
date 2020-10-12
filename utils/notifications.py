@@ -3,7 +3,6 @@ from string import Template
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-MY_NAME = "Nile Walker"
 MY_ADDRESS = 'msu.register.tool@gmail.com'
 PASSWORD = 'MSURegister1'
 SUBJECT = "Google Housing Request"

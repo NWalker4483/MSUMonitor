@@ -89,7 +89,7 @@ class Manager:
                     if len(data) == 0:
                         continue
                     current_course_info.append(data)
-            ###########################################
+                ###########################################
                 if current_course_info[0] == "C":
                     continue  # Course on this row is full
                 else:
