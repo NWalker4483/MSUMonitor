@@ -1,0 +1,22 @@
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    types: [closed] 
+    branches: [ master ]
+jobs:
+  repo-sync:
+    #if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - name: repo-sync
+      uses: wei/git-sync@v1
+      env:
+        SOURCE_REPO: "https://github.com/NWalker4483/AutoRegistration.git"
+        SOURCE_BRANCH: "master"
+        DESTINATION_REPO: ${{ secrets.GLITCH_GIT_URL }}
+        DESTINATION_BRANCH: "master"
+      with:
+        args: $SOURCE_REPO $SOURCE_BRANCH $DESTINATION_REPO $DESTINATION_BRANCH
