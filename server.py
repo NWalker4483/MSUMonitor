@@ -16,18 +16,20 @@ app.logger.addHandler(handler)
 @app.route('/')
 def my_form():
     global manager
-    return render_template('form.html',courses = websis.get_available_courses(""))
+    return render_template('form.html',courses = available_courses)
 
+@app.route('/check', methods=['POST'])
+def CheckCourseSubscriptions():
+    global manager
 
-@app.route('/', methods=['POST'])
+@app.route('/subscribe', methods=['POST'])
 def ProcessCourseSubscribtionForm():
     global manager
     MSU_USERNAME = request.form['username'].strip()
-    MSU_PASSWORD = request.form['password']
-    TERM_IN = request.form['trm']
+    MSU_PASSWORD = request.form.get('password', None)
+    TERM_IN = websis.CURRENT_TERM_ID
     SUBJECT, COURSE_ID = request.form["course"].split()
-    CRN = request.form['crn']
-    # TODO Add Better/More Status Msgs
+    CRN = request.form['crn'] # TODO Add Better/More Status Msgs
     new_student = Student(MSU_USERNAME, MSU_PASSWORD)
     msg = f"Added {MSU_USERNAME} to {SUBJECT} {COURSE_ID} : {CRN} list behind {'null'} others"
     if not manager.hasInfoFor(MSU_USERNAME):
@@ -43,10 +45,10 @@ def ProcessCourseSubscribtionForm():
             TERM_IN, SUBJECT, COURSE_ID, CRN, MSU_USERNAME)
         app.logger.info(msg)
             
-    return render_template('form.html', message=msg)
+    return render_template('form.html', message=msg, courses = available_courses)
 
 
-def ScheduleWebsisCheck(t=1):
+def ScheduleWebsisCheck(t=60):
     global manager
     manager.CheckCourseAvailability()
     threading.Timer(t, ScheduleWebsisCheck).start()
@@ -54,5 +56,6 @@ def ScheduleWebsisCheck(t=1):
 
 if __name__ == "__main__":
     manager = Manager()
-    ScheduleWebsisCheck(15)# Seconds 
+    available_courses = websis.get_available_courses(manager.getMasterSess(),websis.CURRENT_TERM_ID)
+    ScheduleWebsisCheck(600)# Seconds 
     app.run(debug=True)

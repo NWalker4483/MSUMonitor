@@ -1,0 +1,9 @@
+
+Dear ${FIRST_NAME} ${LAST_NAME}, 
+My name is ${MY_NAME} and I am a Sophomore at Morgan State University. 
+I'm looking for a roommate while in ${LOCATION} from ${START_DATE} to ${END_DATE}. 
+I'd like to live close to the office if possible as I tend to work-in late.
+Email me at ${MY_ADDRESS} or text me at ${MY_NUMBER}.
+
+Thanks, 
+     ${MY_NAME}

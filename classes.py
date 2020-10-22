@@ -7,38 +7,40 @@ import utils.notifications as notify
 import auth as auth
 
 log = logging.getLogger("AutoRegistration.sub")
-class Status:
-    TEST = -1
-    TRIED_AND_SUCCEEDED = 0
-    TRIED_AND_FAILED = 1
-    LOGIN_FAILED = 2
 
 
 class Student:
 
-    def __init__(self, username: str, password: str):
-        self.__phone_num = None
+    def __init__(self, username: str, password=None):
         self.username = username.strip()
         self.__password = password  # ! Shouldn't be plaintext in the future
         self.__courses = set()  # set((TERM_IN, SUBJECT, COURSE_ID, CRN))
         self.email = self.username + "@morgan.edu"
         self.br = None  # Logged In Websis Browser Session
-
+ 
     def getNeededCourses(self) -> set:
         return self.__courses
 
     def addNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str):
         self.__courses.add((TERM_IN, SUBJECT, COURSE_ID, CRN))
         # Send Confirmation Email
+        notify.notifyStudent(self.username, TERM_IN,
+                             SUBJECT, COURSE_ID, CRN, 0)
 
-    def removeNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str):
+    def removeNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str, registred=True):
         self.__courses.remove((TERM_IN, SUBJECT, COURSE_ID, CRN))
         # Send Confirmation Email
+        if registred:
+            notify.notifyStudent(self.username, TERM_IN,
+                                 SUBJECT, COURSE_ID, CRN, 3)
+        else:
+            notify.notifyStudent(self.username, TERM_IN,
+                                 SUBJECT, COURSE_ID, CRN, 4)
 
-    def registerFor(self, CRN: str) -> Status: 
+    def registerFor(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str) -> bool:
         if (not websis.WebsisSessionIsActive(self.br)):  # Don't Log Back in if we dont have to
             self.br = websis.LoginToWebsis(self)
-        return True
+        return websis.register_for_course(self.br, TERM_IN, SUBJECT, COURSE_ID, CRN)
 
     def getLoginInfo(self):
         return self.username, self.__password
@@ -50,7 +52,8 @@ class Manager:
         self.master = Student(auth.username, auth.password)
         self.__master_sess = websis.LoginToWebsis(self.master)
         self.__students = dict()  # {uname: Student}
-
+    def getMasterSess(self):
+        return self.__master_sess
     def CheckCourseAvailability(self):
         # Aggregate Course Requests
         courses2check = set()  # {(TERM_IN,SUBJECT,COURSE_ID)}
@@ -68,13 +71,14 @@ class Manager:
                 f"Checking {TERM_IN} {SUBJECT} {COURSE_ID} for availabilities")
             html = websis.get_courses_page(
                 websis.LoginToWebsis(self.master), TERM_IN, SUBJECT, COURSE_ID)
-            
+
             soup = BeautifulSoup(html, features="html5lib")
             table = soup.find("table", attrs={
                               "summary": "This layout table is used to present the sections found"})
             rows = table.find_all("tr")[2:]
 
             # * Needs to be cleaned/commented desperately
+            # * TBH Cant remember why this chunk works
             for row in rows:
                 if row == None:
                     continue
@@ -86,19 +90,27 @@ class Manager:
                     if len(data) == 0:
                         continue
                     current_course_info.append(data)
+                ###########################################
                 if current_course_info[0] == "C":
                     continue  # Course on this row is full
                 else:
                     if current_course_info[1] in crns2check:
                         # ? Should be sorted by the order they were added in
                         for student in crns2check[current_course_info[1]]:
-                            succeeded = student.registerFor(
-                                current_course_info[1])
-                            if (succeeded == True):
-                                student.removeNeededCourse(
-                                    TERM_IN, SUBJECT, COURSE_ID, current_course_info[1])
-                            if (len(student.getNeededCourses()) == 0):
-                                self.RemoveStudent(student.username)
+                            if student.getLoginInfo()[1] != None:
+                                succeeded = student.registerFor(
+                                    current_course_info[1])
+                                if succeeded == True:
+                                    student.removeNeededCourse(
+                                        TERM_IN, SUBJECT, COURSE_ID, current_course_info[1])
+                                else:  # Notify Student of Failed Registration
+                                    notify.notifyStudent(
+                                        student.username, TERM_IN, SUBJECT, COURSE_ID, current_course_info[1], 4)
+                                if (len(student.getNeededCourses()) == 0):
+                                    self.RemoveStudent(student.username)
+                            else:
+                                notify.notifyStudent(
+                                    student.username, TERM_IN, SUBJECT, COURSE_ID, current_course_info[1], 2)
 
     def AddCourseSubscribtion(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str, username: str):
         self.__students[username].addNeededCourse(
