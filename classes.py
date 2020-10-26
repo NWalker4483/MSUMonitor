@@ -17,7 +17,7 @@ class Student:
         self.__courses = set()  # set((TERM_IN, SUBJECT, COURSE_ID, CRN))
         self.email = self.username + "@morgan.edu"
         self.br = None  # Logged In Websis Browser Session
- 
+
     def getNeededCourses(self) -> set:
         return self.__courses
 
@@ -40,7 +40,15 @@ class Student:
     def registerFor(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str) -> bool:
         if (not websis.WebsisSessionIsActive(self.br)):  # Don't Log Back in if we dont have to
             self.br = websis.LoginToWebsis(self)
-        return websis.register_for_course(self.br, TERM_IN, SUBJECT, COURSE_ID, CRN)
+        success = websis.register_for_course(
+            self.br, TERM_IN, SUBJECT, COURSE_ID, CRN)
+        if success == True:
+            self.removeNeededCourse(
+                TERM_IN, SUBJECT, COURSE_ID, CRN)
+        else:  # Notify Student of Failed Registration
+            notify.notifyStudent(
+                self.username, TERM_IN, SUBJECT, COURSE_ID, CRN, 4)
+        return success
 
     def getLoginInfo(self):
         return self.username, self.__password
@@ -52,8 +60,10 @@ class Manager:
         self.master = Student(auth.username, auth.password)
         self.__master_sess = websis.LoginToWebsis(self.master)
         self.__students = dict()  # {uname: Student}
+
     def getMasterSess(self):
         return self.__master_sess
+
     def CheckCourseAvailability(self):
         # Aggregate Course Requests
         courses2check = set()  # {(TERM_IN,SUBJECT,COURSE_ID)}
@@ -90,27 +100,23 @@ class Manager:
                     if len(data) == 0:
                         continue
                     current_course_info.append(data)
+                Remaining, CRN = current_course_info[:2]
                 ###########################################
-                if current_course_info[0] == "C":
+                if Remaining == "C":
                     continue  # Course on this row is full
                 else:
-                    if current_course_info[1] in crns2check:
+                    if CRN in crns2check:
                         # ? Should be sorted by the order they were added in
-                        for student in crns2check[current_course_info[1]]:
+                        for student in crns2check[CRN]:
+                            # If their password is not None
                             if student.getLoginInfo()[1] != None:
-                                succeeded = student.registerFor(
-                                    current_course_info[1])
-                                if succeeded == True:
-                                    student.removeNeededCourse(
-                                        TERM_IN, SUBJECT, COURSE_ID, current_course_info[1])
-                                else:  # Notify Student of Failed Registration
-                                    notify.notifyStudent(
-                                        student.username, TERM_IN, SUBJECT, COURSE_ID, current_course_info[1], 4)
+                                student.registerFor(
+                                    TERM_IN, SUBJECT, COURSE_ID, CRN)
                                 if (len(student.getNeededCourses()) == 0):
                                     self.RemoveStudent(student.username)
                             else:
                                 notify.notifyStudent(
-                                    student.username, TERM_IN, SUBJECT, COURSE_ID, current_course_info[1], 2)
+                                    student.username, TERM_IN, SUBJECT, COURSE_ID, CRN, 2)
 
     def AddCourseSubscribtion(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str, username: str):
         self.__students[username].addNeededCourse(
@@ -128,6 +134,8 @@ class Manager:
             if (len(self.__students[username].getNeededCourses()) != 0):
                 log.warning(
                     f"{username} was removed from the registry with {len(self.__students[username].getNeededCourses())} courses unfufilled")
+                for TERM_IN, SUBJECT, COURSE_ID, CRN in self.__students[username].getNeededCourses():
+                    self.__students[username].removeNeededCourse(TERM_IN, SUBJECT, COURSE_ID, CRN, False)
             else:
                 log.info(
                     f"{username} was removed from the registry with all courses fuffiled")

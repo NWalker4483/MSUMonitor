@@ -1,0 +1,2 @@
+
+${USERNAME},${TERM_IN},${SUBJECT},${COURSE_ID},${CRN}

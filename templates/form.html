@@ -91,11 +91,24 @@
             clear: both;
         }
     </style>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("input[name=register]").click(function () {
+                if ($(this).is(":checked") == true) {
+                    $("input[name=password]").removeAttr("disabled");
+                    $("input[name=alt_pin]").removeAttr("disabled");
+                } else {
+                    $("input[name=password]").attr("disabled", "disabled");
+                    $("input[name=alt_pin]").attr("disabled", "disabled");
+                }
+            });
+        });
+    </script>
 </head>
 
 <body><br><br><br>
-    <div align="center">
-        <table border="50" cellpadding="0" cellspacing="0" width="196" bordercolor="orange"
+        <table align="center" border="50" cellpadding="0" cellspacing="0" width="196" bordercolor="orange"
             style="border-collapse: collapse" height="288">
             <tbody>
                 <tr>
@@ -167,7 +180,7 @@
 
                                             {% endif %}
 
-                                    </font>
+                                        </font>
                                     </b>
 
                                     <!---------->
@@ -177,8 +190,14 @@
                                         <input type="text" name="username">
                                     </p>
                                     <p>
-                                        <label for="password">Morgan Password</label>
-                                        <input type="password" name="password">
+                                        <label for="register">Attempt to Register?</label>
+                                        <input type="checkbox" name="register" />
+                                    </p>
+                                    <p>
+                                        <input placeholder="Password" type="password" name="password"
+                                            disabled="disabled">
+                                        <input placeholder="Alternate Pin" type="text" name="alt_pin"
+                                            disabled="disabled">
                                     </p>
                                     <p>
                                         <label for="course">Course Options</label>
@@ -195,7 +214,6 @@
                                     <p>
                                         <label for="crn">Course Registration Number</label>
                                         <input type="text" name="crn">
-                                        <input type="hidden" value="201930" name="trm">
                                     </p>
 
                                     <p>
@@ -204,16 +222,12 @@
                                 </form>
 
                             </div>
-
-
+                            <br>
                             <br>
                         </div>
                     </td>
                 </tr>
             </tbody>
-        </table><br>
-
-    </div>
+        </table>
 </body>
-
 </html>
