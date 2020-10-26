@@ -32,6 +32,7 @@ def ProcessCourseSubscribtionForm():
     MSU_USERNAME = request.form['username'].strip()
     MSU_PASSWORD = request.form.get('password', None)
     ALT_PIN = request.form.get('alt_pin', None) # TODO: Add Constraints to html form 
+    
     TERM_IN = websis.CURRENT_TERM_ID
     SUBJECT, COURSE_ID = request.form["course"].split()
     CRN = request.form['crn'] # TODO: Add Constraints to html form 
@@ -49,7 +50,7 @@ def ProcessCourseSubscribtionForm():
                 app.logger.error(f"Websis Login Failed Check Info for {MSU_USERNAME}")
         else:
             manager.AddStudent(new_student)
-            
+
     if manager.hasInfoFor(MSU_USERNAME):
         manager.AddCourseSubscribtion(
             TERM_IN, SUBJECT, COURSE_ID, CRN, MSU_USERNAME)

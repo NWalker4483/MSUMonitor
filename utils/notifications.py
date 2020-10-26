@@ -29,7 +29,7 @@ def read_template(filename):
 
 
 def notifyStudent(USERNAME, TERM_IN, SUBJECT, COURSE_ID, CRN, status=0):
-    message_template = read_template("messages/"+template_list[status])
+    message_template = read_template("utils/messages/"+template_list[status])
 
     # set up the SMTP server AND Login
     s = smtplib.SMTP(host=SERVER_ADDRESS, port=PORT)
