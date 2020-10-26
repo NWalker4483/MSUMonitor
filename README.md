@@ -17,7 +17,6 @@ Automatically monitor and register for courses when availabilities arise
 * * Any other cases you can think of
 ## Nile
 * Implement Scraping of Available Courses in ```get_available_courses``` Function  
-* # https://lbssbnprod.morgan.edu/nprod/bwckgens.p_proc_term_date
 ## Charnelle 
 * Make automatic registration optional
 * * In its current state auto registration requires that the user enter password to moniter a course, This password is not actually required for monitoring and only for registration by making the registration feature optional we make our software more accessible to users uncomfortable giving us their passwords.

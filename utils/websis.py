@@ -4,7 +4,8 @@ from bs4 import BeautifulSoup
 
 CURRENT_TERM_ID = "202070"
 
-def register_for_course(br_session, TERM_IN, SUBJECT, COURSE_ID,CRN):
+
+def register_for_course(br_session, TERM_IN, SUBJECT, COURSE_ID, CRN):
     # ! WARN: Totally doesnt work
     return ""
 

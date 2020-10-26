@@ -17,7 +17,7 @@ class Student:
         self.__courses = set()  # set((TERM_IN, SUBJECT, COURSE_ID, CRN))
         self.email = self.username + "@morgan.edu"
         self.br = None  # Logged In Websis Browser Session
- 
+
     def getNeededCourses(self) -> set:
         return self.__courses
 
@@ -52,8 +52,10 @@ class Manager:
         self.master = Student(auth.username, auth.password)
         self.__master_sess = websis.LoginToWebsis(self.master)
         self.__students = dict()  # {uname: Student}
+
     def getMasterSess(self):
         return self.__master_sess
+
     def CheckCourseAvailability(self):
         # Aggregate Course Requests
         courses2check = set()  # {(TERM_IN,SUBJECT,COURSE_ID)}

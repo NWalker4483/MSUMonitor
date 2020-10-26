@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>[Auto Registration Documentation <sub>version 1.4</sub>](www.github.com/NWalker4483)</title>
+        <style>
+</style>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        
+        
+        
+    </head>
+    <body class="vscode-light">
+        <h1 id="auto-registration-documentation-subversion-14sub"><a href="www.github.com/NWalker4483">Auto Registration Documentation <sub>version 1.4</sub></a></h1>
+<h4 id="by-nile-walker">by: Nile Walker,</h4>
+<h2 id="preface">Preface</h2>
+<p>This documentation is intended for those that want to continue the development of the msu auto registration system. For those intending to use it a high-level explanation can be found in the <a href="">User Requirements</a> Section.</p>
+<p>In its previous versions the system was only able to monitor availabilities for a single course at a time for a single student and notify them via the terminal. As will be described in this document this system can now monitor courses for an unlimited number of students and courses to then notify them via email of availabilities.</p>
+<h2 id="introduction">Introduction</h2>
+<p>At times finding availability for gen-ed or popular courses can be difficult while waiting for other students to drop the course this software is intended to provide an additional advantage to those who are willing to use it and automatically register for availabilities in their necessary classes.</p>
+<p>The software works by creating a python based browser session and logging into websis. It then makes a list of all of the courses that it should check. And if an availability is there it will email the relevant students. All interactions with websites are done through a websis API built on top of existing modules.</p>
+<h2 id="glossary">Glossary</h2>
+<ul>
+<li><em>Websis</em> - The web-based tool that Morgan State University uses to manage student information and registration</li>
+<li><em>CRN</em> - A six digit identifier for any course available in a given term.</li>
+<li><em>Browser Session</em> - as a server-side storage of information that is desired to persist throughout the user's interaction with the web site or web application.</li>
+<li><em>API</em> - Application Programming Interface, which is a software intermediary that allows two applications to talk to each other. Each time you use an app like Facebook, send an instant message, or check the weather on your phone, you're using an API.</li>
+<li><em>Subscriber</em> - Any student that has a course that they want to be notified about or registered for</li>
+</ul>
+<h2 id="user-requirements-definition">User Requirements Definition</h2>
+<p>The auto registration system and provide to core services. Both of which are available through the site <a href="https://msu-register.glitch.me/">https://msu-register.glitch.me/</a></p>
+<ul>
+<li>
+<p>Course subscription</p>
+<ul>
+<li>Allows students to be added to a list of others that will be emailed whenever an availability is found in one of their courses. The service does not require the user provide a password.</li>
+</ul>
+</li>
+<li>
+<p>Course registration</p>
+<ul>
+<li>In addition to notifying students of availabilities this service attempts to automatically register the student as soon as the availability is found. This service will require that the student provides a password and registration pin.</li>
+</ul>
+</li>
+</ul>
+<h2 id="system-architecture">System Architecture</h2>
+<p>The system is built and a publisher and subscriber type of approach.
+All interactions with websis besides registration are handled through a single account which is managed by the <code>Manager</code> class. This is done in order to prevent an excessive amount of websites traffic which could potentially impact the systems perfomance. And also to give users the option to not provide their password and only be notified of availabilities rather than registered for them.</p>
+<p>When a new student is added to the system an instance of the <code>Student</code> class is created. This object will hold their relevant account information, subscription status, and the courses that they are subscribed to.</p>
+<h2 id="system-requirements-specification">System Requirements Specification</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Function</td>
+<td>Provide users a list of available courses</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>In order to successfully subscribed to a course it is important that the subject and course number are provided accurately and it is easier to generate a list of all of the available courses rather than check if a course exists at the time of form submission</td>
+</tr>
+<tr>
+<td>Inputs</td>
+<td>The current term, Logged In Browser Session</td>
+</tr>
+<tr>
+<td>Source</td>
+<td>websis API, Manager Object</td>
+</tr>
+<tr>
+<td>Outputs</td>
+<td>A dictionary object with all available course subjects and course numbers</td>
+</tr>
+<tr>
+<td>Destination</td>
+<td>Frontend</td>
+</tr>
+<tr>
+<td>Action</td>
+<td>Log into the websis app, navigate to the search for courses page using HTML parser to find all subject options and then search all subjects for all course options</td>
+</tr>
+<tr>
+<td>Requirements</td>
+<td>The current term, Logged In Browser Session</td>
+</tr>
+<tr>
+<td>Pre-Condition</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Post-Condition</td>
+<td>A drop-down menu in the front and is populated with all available course options separated by subject</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Function</td>
+<td>Notify Students to changes in their subscriptions</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>In order to appropriately interact with both in their course subscriptions are created, fufilled and dropped</td>
+</tr>
+<tr>
+<td>Inputs</td>
+<td>Student email, Subscription Status</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>Student</code> Object, <code>Manager</code></td>
+</tr>
+<tr>
+<td>Outputs</td>
+<td>An Email</td>
+</tr>
+<tr>
+<td>Destination</td>
+<td>Users Email</td>
+</tr>
+<tr>
+<td>Action</td>
+<td>Open the appropriate template for the current subscription status, Substitute in the relevant information for the student and the circumstances, Send the email from the registration tools dedicated Gmail account</td>
+</tr>
+<tr>
+<td>Requirements</td>
+<td>Tools Gmail Login, Email Templates</td>
+</tr>
+<tr>
+<td>Pre-Condition</td>
+<td>User is unnotified</td>
+</tr>
+<tr>
+<td>Post-Condition</td>
+<td>User is notified</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Function</td>
+<td>Add Subscriber to waitlist on a course</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>It's important to maintain a list of who needs what</td>
+</tr>
+<tr>
+<td>Inputs</td>
+<td>TERM_IN, SUBJECT, COURSE_ID, CRN,Student Username</td>
+</tr>
+<tr>
+<td>Source</td>
+<td>Frontend</td>
+</tr>
+<tr>
+<td>Outputs</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Destination</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Action</td>
+<td>When the form is submitted if a student with that user name exist in the system we will add the course to its list of needed courses otherwise the <code>Student</code> object will be created and of course added after that</td>
+</tr>
+<tr>
+<td>Requirements</td>
+<td>That the Frontend is operating properly</td>
+</tr>
+<tr>
+<td>Pre-Condition</td>
+<td>Student is not on the waitlist list for a course</td>
+</tr>
+<tr>
+<td>Post-Condition</td>
+<td>Student is on the waitlist and was notified via email</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Function</td>
+<td>Check for updates course availabilities</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>This part of the system checks for changes in the spaces left and of course</td>
+</tr>
+<tr>
+<td>Inputs</td>
+<td>A list of all active <code>Student</code> objects</td>
+</tr>
+<tr>
+<td>Source</td>
+<td><code>Manager</code></td>
+</tr>
+<tr>
+<td>Outputs</td>
+<td>Emails</td>
+</tr>
+<tr>
+<td>Destination</td>
+<td>The Relevant Students</td>
+</tr>
+<tr>
+<td>Action</td>
+<td>If the manager browser session is not currently logged in log in. Create a list of all courses that need to be checked and their corresponding CRNs that are being checked for availability. Using the websis API request the courses page for that course and check for availability if it's found notify the relevant students via email</td>
+</tr>
+<tr>
+<td>Requirements</td>
+<td>That the manager browser session is logged in</td>
+</tr>
+<tr>
+<td>Pre-Condition</td>
+<td>Any availabilities have neither been filled and nor have the appropriate students been notified</td>
+</tr>
+<tr>
+<td>Post-Condition</td>
+<td>Any availabilities have either been filled and or the appropriate students have been notified</td>
+</tr>
+</tbody>
+</table>
+<br>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Function</td>
+<td>Register a student for a course</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>Once an opening is found the system needs to be able to register a student for the selected course and if registration is impossible return the reason why</td>
+</tr>
+<tr>
+<td>Inputs</td>
+<td>TERM_IN, SUBJECT, COURSE_ID, CRN, Student Username, Student Password</td>
+</tr>
+<tr>
+<td>Source</td>
+<td>The student manager class</td>
+</tr>
+<tr>
+<td>Outputs</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Destination</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Action</td>
+<td>Log into wbesis using the students credentials, navigate to the registration page, enter the registration pin, complete the form to register for the course, complete registration</td>
+</tr>
+<tr>
+<td>Requirements</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Pre-Condition</td>
+<td>The student is not registered for the course and there's an available space</td>
+</tr>
+<tr>
+<td>Post-Condition</td>
+<td>The course and has been notified via email and had a corresponding subscription removed from their list. If registration was not possible they have been notified and the course stays on their list</td>
+</tr>
+</tbody>
+</table>
+<br>
+<h2 id="system-models">System Models</h2>
+<img alt="lucidchart.png" src="file:////Users/nilewalker/Projects/GitHub/AutoRegistration/lucidchart.png">
+<h2 id="system-evolution">System Evolution</h2>
+<p>This system assumes that the structure of websis as of Oct 2020 does not significantly change since the system has no tools in place to accommodate for changing links or html layout. The use of a seperated API however does allow mitigate this risk. Since changes to the webpages structure only require that these high-level functions be reimplemented rather than the entire system. And though it is still missing several features before it can be considered stable, It is very important that these sections of the software remain separate as we have no official association with University and changes could happen at any time without notice.</p>
+<p>We are also assuming that all development is being done through github. When a pull request to the master branch is closed, its code is synced to the glitch repo which updates the live site. While updating the glitch repo directly is an option it is not recommended as any future changes to the github will override these changes.</p>
+<h2 id="appendices">Appendices</h2>
+<ul>
+<li>Not really sure how to write one of these</li>
+</ul>
+<h2 id="index">Index</h2>
+<ul>
+<li>Or these</li>
+</ul>
+
+    </body>
+    </html>

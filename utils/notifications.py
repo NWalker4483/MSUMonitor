@@ -17,6 +17,7 @@ template_list = [
     "Course_registration_unsuccessful.txt"
 ]
 
+
 def read_template(filename):
     """
     Returns a Template object comprising the contents of the 
