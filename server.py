@@ -33,17 +33,16 @@ def ProcessCourseSubscribtionForm():
     MSU_PASSWORD = request.form.get('password', None)
     ALT_PIN = request.form.get('alt_pin', None) # TODO: Add Constraints to html form 
     
-    TERM_IN = websis.CURRENT_TERM_ID
     SUBJECT, COURSE_ID = request.form["course"].split()
     CRN = request.form['crn'] # TODO: Add Constraints to html form 
     new_student = Student(MSU_USERNAME, MSU_PASSWORD)
     
-    msg = f"Added {MSU_USERNAME} to {SUBJECT} {COURSE_ID} : {CRN} list behind {'null'} others"
+    msg = f"Added {MSU_USERNAME} to {SUBJECT} {COURSE_ID} : {CRN} list behind {'null'} others" 
     
     if not manager.hasInfoFor(MSU_USERNAME):
-        if ALT_PIN != None: # If the user is attempting to use the registration service
-        # Validate Login Info
-            if websis.WebsisSessionIsActive(websis.LoginToWebsis(new_student)):
+        if MSU_PASSWORD != None: # If the user is attempting to use the registration service
+            if websis.WebsisSessionIsActive(websis.LoginToWebsis(new_student)): # Validate Login Info
+                # Maybe Validate the Alt Pin 
                 manager.AddStudent(new_student)
             else:
                 msg = "Websis Login Failed Check Info "
@@ -53,7 +52,7 @@ def ProcessCourseSubscribtionForm():
 
     if manager.hasInfoFor(MSU_USERNAME):
         manager.AddCourseSubscribtion(
-            TERM_IN, SUBJECT, COURSE_ID, CRN, MSU_USERNAME)
+            websis.CURRENT_TERM_ID, SUBJECT, COURSE_ID, CRN, MSU_USERNAME)
         app.logger.info(msg)
 
     return render_template('form.html', message=msg, courses=available_courses)
@@ -67,7 +66,7 @@ def ScheduleWebsisCheck(t=60):
 
 if __name__ == "__main__":
     manager = Manager()
-    available_courses = websis.get_available_courses(
-        manager.getMasterSess(), websis.CURRENT_TERM_ID)
+    with open('courses.json','r') as inf:
+        available_courses = eval(inf.read())
     ScheduleWebsisCheck(600)  # Seconds
     app.run(debug=True)

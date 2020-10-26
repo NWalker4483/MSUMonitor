@@ -5,7 +5,7 @@ from email.mime.text import MIMEText
 
 MY_ADDRESS = 'msu.register.tool@gmail.com'
 PASSWORD = 'MSURegister1'
-SUBJECT = "Google Housing Request"
+MAIL_SUBJECT = "MSU Register Tool Update"
 SERVER_ADDRESS = "smtp.gmail.com"
 PORT = 587
 
@@ -42,7 +42,7 @@ def notifyStudent(USERNAME, TERM_IN, SUBJECT, COURSE_ID, CRN, status=0):
     msg['From'] = MY_ADDRESS
     msg['To'] = USERNAME + "@morgan.edu"
 
-    msg['Subject'] = SUBJECT
+    msg['Subject'] = MAIL_SUBJECT
 
     info = {
         'USERNAME': USERNAME,
