@@ -1,5 +1,3 @@
-import mechanize
-from bs4 import BeautifulSoup
 import logging
 
 import utils.websis as websis
@@ -27,15 +25,11 @@ class Student:
         notify.notifyStudent(self.username, TERM_IN,
                              SUBJECT, COURSE_ID, CRN, 0)
 
-    def removeNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str, registred=True):
+    def removeNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str, registered=True):
         self.__courses.remove((TERM_IN, SUBJECT, COURSE_ID, CRN))
         # Send Confirmation Email
-        if registred:
-            notify.notifyStudent(self.username, TERM_IN,
-                                 SUBJECT, COURSE_ID, CRN, 3)
-        else:
-            notify.notifyStudent(self.username, TERM_IN,
-                                 SUBJECT, COURSE_ID, CRN, 4)
+        notify.notifyStudent(self.username, TERM_IN,
+                             SUBJECT, COURSE_ID, CRN, 3 if registered else 4)
 
     def registerFor(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str) -> bool:
         if (not websis.WebsisSessionIsActive(self.br)):  # Don't Log Back in if we dont have to
@@ -79,32 +73,10 @@ class Manager:
         for TERM_IN, SUBJECT, COURSE_ID in courses2check:
             log.info(
                 f"Checking {TERM_IN} {SUBJECT} {COURSE_ID} for availabilities")
-            html = websis.get_courses_page(
-                websis.LoginToWebsis(self.master), TERM_IN, SUBJECT, COURSE_ID)
-
-            soup = BeautifulSoup(html, features="html5lib")
-            table = soup.find("table", attrs={
-                              "summary": "This layout table is used to present the sections found"})
-            rows = table.find_all("tr")[2:]
-
-            # * Needs to be cleaned/commented desperately
-            # * TBH Cant remember why this chunk works
-            for row in rows:
-                if row == None:
-                    continue
-                current_course_info = []
-                lines = str(row).split("\n")
-                for line in lines:
-                    entry = BeautifulSoup(line, features="html5lib")
-                    data = entry.text
-                    if len(data) == 0:
-                        continue
-                    current_course_info.append(data)
-                Remaining, CRN = current_course_info[:2]
-                ###########################################
-                if Remaining == "C":
-                    continue  # Course on this row is full
-                else:
+            options = websis.get_options_for(websis.LoginToWebsis(
+                self.master), TERM_IN, SUBJECT, COURSE_ID)
+            for CRN in options:
+                if options[CRN] > 0:
                     if CRN in crns2check:
                         # ? Should be sorted by the order they were added in
                         for student in crns2check[CRN]:
@@ -135,7 +107,8 @@ class Manager:
                 log.warning(
                     f"{username} was removed from the registry with {len(self.__students[username].getNeededCourses())} courses unfufilled")
                 for TERM_IN, SUBJECT, COURSE_ID, CRN in self.__students[username].getNeededCourses():
-                    self.__students[username].removeNeededCourse(TERM_IN, SUBJECT, COURSE_ID, CRN, False)
+                    self.__students[username].removeNeededCourse(
+                        TERM_IN, SUBJECT, COURSE_ID, CRN, False)
             else:
                 log.info(
                     f"{username} was removed from the registry with all courses fuffiled")

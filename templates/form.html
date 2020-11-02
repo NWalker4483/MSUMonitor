@@ -90,7 +90,7 @@
         ul:after {
             clear: both;
         }
-    </style>
+        </style>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript">
         $(function () {
@@ -104,6 +104,38 @@
                 }
             });
         });
+        $("#SUBJ").change(function() {});
+        $("#COURSE_ID").change(function() {});
+        $("#CRN").change(function() {});
+
+        $("#first-choice").change(function() {
+
+    var $dropdown = $(this);
+
+    $.getJSON("jsondata/data.json", function(data) {
+
+        var key = $dropdown.val();
+        var vals = [];
+                            
+        switch(key) {
+            case 'beverages':
+                vals = data.beverages.split(",");
+                break;
+            case 'snacks':
+                vals = data.snacks.split(",");
+                break;
+            case 'base':
+                vals = ['Please choose from above'];
+        }
+        
+        var $secondChoice = $("#second-choice");
+        $secondChoice.empty();
+        $.each(vals, function(index, value) {
+            $secondChoice.append("<option>" + value + "</option>");
+        });
+
+    });
+    });
     </script>
 </head>
 
@@ -183,7 +215,7 @@
                                         </font>
                                     </b>
 
-                                    <!---------->
+                                    <!---------------------------------------------------->
 
                                     <p>
                                         <label for="username">Morgan Username: Don't add '@morgan.edu'</label>
@@ -200,8 +232,8 @@
                                             disabled="disabled">
                                     </p>
                                     <p>
-                                        <label for="course">Course Options</label>
-                                        <select name="course" id="course">
+                                        <label for="SUBJ">Course Options</label>
+                                        <select name="course" id="SUBJ">
                                             {%for subject in courses%}
                                             <optgroup label="{{subject}}">
                                                 {%for class in courses[subject]%}

@@ -14,6 +14,7 @@ Automatically monitor and register for courses when availabilities arise
 * * Course_registration_successful.txt # A spot was available and taken
 * * Course_registration_unsuccessful.txt # A spot is available and couldn't be taken i.e Prerequsite/ Major of study restrictions
 * * Any other cases you can think of
-## Nile
+## Nile 
+* Write a script to keep the glitch project active or find another hosting service
 ## Charnelle 
-* Give users the option to remove a course subscription manually
+* Give users the option to remove a course subscription manually 

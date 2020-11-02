@@ -3,6 +3,7 @@ from utils.websis import CURRENT_TERM_ID
 from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 import auth
+import websis
 login_url = "https://lbapp1nprod.morgan.edu/ssomanager/c/SSB"
     
 sess = mechanize.Browser()
@@ -57,9 +58,10 @@ for option in soup.find("select").find_all('option'):
             if len(data) == 0:
                 continue
             current_course_info.append(data)
-        options[option['value']].append(current_course_info[0])
+        websis.get_courses_page(sess,websis.CURRENT_TERM_ID,option["value"],current_course_info[0])    
+        # options[option['value']].append(current_course_info[0])
     sess.back()
 
-f = open('helloworld','w')
+f = open('static/courses.json','w')
 f.write(str(options))
 f.close()
