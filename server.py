@@ -16,10 +16,12 @@ app.logger.addHandler(handler)
 
 
 @app.route('/')
-def my_form():
-    global manager
+def HomePage():
     return render_template('form.html', courses=available_courses)
 
+@app.route('/modify', methods=['POST'])
+def CheckModifySubscriptions():
+    global manager
 
 @app.route('/check', methods=['POST'])
 def CheckCourseSubscriptions():
@@ -45,7 +47,6 @@ def ProcessCourseSubscribtionForm():
             if websis.WebsisSessionIsActive(websis.LoginToWebsis(new_student)): # Validate Login Info
                 # Maybe Validate the Alt Pin 
                 manager.AddStudent(new_student)
-                
             else:
                 msg = "Websis Login Failed Check Info "
                 app.logger.error(f"Websis Login Failed Check Info for {MSU_USERNAME}")
