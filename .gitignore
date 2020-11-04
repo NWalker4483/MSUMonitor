@@ -1,4 +1,5 @@
 auth.py
+start.sh
 __pycache__/
 *.log
 *.ipynb

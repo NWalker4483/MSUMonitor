@@ -272,7 +272,6 @@ xlwings==0.19.5
 xlwt==1.3.0
 xmltodict==0.12.0
 yapf @ file:///tmp/build/80754af9/yapf_1593528177422/work
-zbar-py==1.0.4
 zict==2.0.0
 zipp==3.1.0
 zope.event==4.4
