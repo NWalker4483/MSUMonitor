@@ -104,12 +104,6 @@
                 }
                
             });
-            $('#SUBJ').append(`<option value="${"MATH"}"> 
-                                        ${"MATH"} 
-                                   </option>`);
-                $('#SUBJ').append(`<option value="${"EEGR"}"> 
-                                        ${"EEGR"} 
-                                   </option>`);
                 
             function removeOptions(selectElement) {
                 var i, L = selectElement.options.length - 1;
@@ -118,6 +112,7 @@
                 }
             }
             var Courses = JSON.parse('{{ courses | tojson | safe}}');
+
             $.each(Courses, function (key, value) {
                             $('#SUBJ').append(`<option value="${key}">
                                 ${key} </option>`);
@@ -246,13 +241,13 @@
                             </p>
                             <p>
                                 <label for="SUBJ">Course Options</label>
-                                <select name="SUBJ" id="SUBJ">
+                                <select name="SUBJ" id="SUBJ" required>
                                     <option disabled selected>Select your option</option>
                                 </select>
-                                <select name="COURSE_ID" id="COURSE_ID">
+                                <select name="COURSE_ID" id="COURSE_ID" required>
                                     <option disabled selected>Select your option</option>
                                 </select>
-                                <select name="CRN" id="CRN">
+                                <select name="CRN" id="CRN" required>
                                     <option disabled selected>Select your option</option>
                                 </select>
                             </p>
