@@ -59,7 +59,6 @@ docutils==0.15.2
 entrypoints==0.3
 et-xmlfile==1.0.1
 fastcache==1.1.0
-feedparser==5.2.1
 filelock==3.0.12
 flake8==3.8.3
 Flask==1.1.2
@@ -84,7 +83,6 @@ imageai==2.1.5
 imageio @ file:///tmp/build/80754af9/imageio_1594161405741/work
 imagesize==1.2.0
 importlib-metadata @ file:///opt/concourse/worker/volumes/live/290b74d5-e5f3-47ff-7257-17b3c9ccecab/volume/importlib-metadata_1593446478206/work
-imutils==0.5.3
 intervaltree @ file:///tmp/build/80754af9/intervaltree_1594361675072/work
 ipykernel @ file:///opt/concourse/worker/volumes/live/cb5649db-6f30-435c-6981-1014aa39f028/volume/ipykernel_1594755378873/work/dist/ipykernel-5.3.2-py3-none-any.whl
 ipython @ file:///opt/concourse/worker/volumes/live/41e43e2f-bbbe-4c76-44fb-a6de0e826dd8/volume/ipython_1593447396701/work
@@ -117,7 +115,6 @@ locket==0.2.0
 lxml @ file:///opt/concourse/worker/volumes/live/d42457f0-83be-4fb6-6c8d-8f9319a861b0/volume/lxml_1594826854945/work
 Markdown==3.3.1
 MarkupSafe @ file:///opt/concourse/worker/volumes/live/cb778296-98db-45ad-411e-6f726e102dc3/volume/markupsafe_1594371638608/work
-matplotlib @ file:///opt/concourse/worker/volumes/live/59859a4b-794b-4c9f-51fd-a0ac1d1ab595/volume/matplotlib-base_1592846058943/work
 mccabe==0.6.1
 mechanize==0.4.5
 mistune @ file:///opt/concourse/worker/volumes/live/95802d64-d39c-491b-74ce-b9326880ca54/volume/mistune_1594373201816/work
@@ -208,12 +205,9 @@ rsa==4.6
 Rtree==0.9.4
 ruamel-yaml==0.15.87
 s3transfer==0.3.3
-scikit-image==0.16.2
-scikit-learn @ file:///opt/concourse/worker/volumes/live/47a3ec7c-70dc-43c0-7317-def24a8afaf5/volume/scikit-learn_1592503037057/work
 scipy==1.4.1
 seaborn==0.10.1
 Send2Trash==1.5.0
-simplE @ file:///Users/nilewalker/Projects/GitHub/cire-1/SimplE
 simplegeneric==0.8.1
 singledispatch==3.4.0.3
 six==1.15.0
@@ -230,18 +224,12 @@ sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.4
 sphinxcontrib-websupport @ file:///tmp/build/80754af9/sphinxcontrib-websupport_1593446360927/work
-spyder @ file:///opt/concourse/worker/volumes/live/0e97f897-b36b-4f78-7283-e99903208a48/volume/spyder_1594831780108/work
-spyder-kernels @ file:///opt/concourse/worker/volumes/live/682c8d56-759f-49eb-7914-dbce4a625209/volume/spyder-kernels_1594751614984/work
 SQLAlchemy @ file:///opt/concourse/worker/volumes/live/45657106-f60d-42e1-6501-7d65be3b36ab/volume/sqlalchemy_1593446313078/work
 statsmodels==0.11.1
 sympy @ file:///opt/concourse/worker/volumes/live/32ef3b19-6d5e-459b-54bf-1bfa312324b4/volume/sympy_1594236601710/work
 symspellpy==6.7.0
 tables==3.6.1
 tblib==1.6.0
-tensorboard==1.12.2
-tensorboard-plugin-wit==1.7.0
-tensorflow @ https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.12.0-py3-none-any.whl
-tensorflow-estimator==2.3.0
 termcolor==1.1.0
 terminado==0.8.3
 testpath==0.4.4

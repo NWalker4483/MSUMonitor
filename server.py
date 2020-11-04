@@ -39,13 +39,13 @@ def ProcessCourseSubscribtionForm():
     new_student = Student(MSU_USERNAME, MSU_PASSWORD)
     
     msg = f"Added {MSU_USERNAME} to {SUBJECT} {COURSE_ID} : {CRN} list behind {'null'} others" 
-    
+
     if not manager.hasInfoFor(MSU_USERNAME):
         if MSU_PASSWORD != None: # If the user is attempting to use the registration service
             if websis.WebsisSessionIsActive(websis.LoginToWebsis(new_student)): # Validate Login Info
                 # Maybe Validate the Alt Pin 
                 manager.AddStudent(new_student)
-                ALT_PIN
+                
             else:
                 msg = "Websis Login Failed Check Info "
                 app.logger.error(f"Websis Login Failed Check Info for {MSU_USERNAME}")
