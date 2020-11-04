@@ -33,8 +33,9 @@ def ProcessCourseSubscribtionForm():
     MSU_PASSWORD = request.form.get('password', None)
     ALT_PIN = request.form.get('alt_pin', None) # TODO: Add Constraints to html form 
     
-    SUBJECT, COURSE_ID = request.form["SUBJ"].split()
-    CRN = request.form['crn'] # TODO: Add Constraints to html form 
+    SUBJECT = request.form["SUBJ"]
+    COURSE_ID = request.form['COURSE_ID'] 
+    CRN = request.form['CRN'] 
     new_student = Student(MSU_USERNAME, MSU_PASSWORD)
     
     msg = f"Added {MSU_USERNAME} to {SUBJECT} {COURSE_ID} : {CRN} list behind {'null'} others" 

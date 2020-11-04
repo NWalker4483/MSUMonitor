@@ -5,6 +5,7 @@ Automatically monitor and register for courses when availabilities arise
 ## General 
 * Implement Check ```WebsisSessionIsActive``` Function to check logins
 * Implement course registration in ```register_for_course``` Function
+* Implement system and interface testing
   
 ## Darius 
 * Create Email Templates Files for various notifications 
