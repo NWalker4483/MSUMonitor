@@ -9,11 +9,10 @@ log = logging.getLogger("AutoRegistration.sub")
 
 class Student:
 
-    def __init__(self, username: str, password=None):
+    def __init__(self, username: str, password = None):
         self.username = username.strip()
         self.__password = password  # ! Shouldn't be plaintext in the future
         self.__courses = set()  # set((TERM_IN, SUBJECT, COURSE_ID, CRN))
-        self.email = self.username + "@morgan.edu"
         self.br = None  # Logged In Websis Browser Session
 
     def getNeededCourses(self) -> set:

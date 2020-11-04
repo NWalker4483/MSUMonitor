@@ -31,8 +31,11 @@ def get_options_for(br_session ,TERM_IN, SUBJECT, COURSE_ID):
                 continue
             current_course_info.append(data)
         Remaining, CRN = current_course_info[0], current_course_info[1]
-        
-        options[CRN] = int(Remaining) if Remaining != "C" else 0
+        try:
+            options[CRN] = int(Remaining)
+        except Exception as e:
+            #print(e)
+            options[CRN] = 0 
    
         ###########################################
     return options

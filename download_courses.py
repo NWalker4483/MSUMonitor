@@ -4,6 +4,7 @@ from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 import auth
 import utils.websis as websis
+import tqdm
 login_url = "https://lbapp1nprod.morgan.edu/ssomanager/c/SSB"
     
 sess = mechanize.Browser()
@@ -29,9 +30,9 @@ GenericParams = {"rsts": "dummy", "crn": "dummy",
                 "begin_hh": "0", "begin_mi": "0", "end_hh": "0", "end_mi": "0"}
 # These need to be kept seperate for it to work
 UserSpecifiedParams1 = {"term_in": CURRENT_TERM_ID, "sel_subj": "dummy"}
-
+print("Downloading Course Info this will take several minutes")
 a = 0
-for option in soup.find("select").find_all('option'):
+for option in tqdm.tqdm(soup.find("select").find_all('option')):
     UserSpecifiedParams2 = {"sel_subj": option['value']}
     options[option['value']] = dict()
 
@@ -58,12 +59,12 @@ for option in soup.find("select").find_all('option'):
             if len(data) == 0:
                 continue
             current_course_info.append(data)
-        websis.get_courses_page(sess,websis.CURRENT_TERM_ID,option["value"],current_course_info[0])    
-        options[option['value']][current_course_info[0]] = ["000000"]
-        print(a)
+        ops = websis.get_options_for(sess,websis.CURRENT_TERM_ID,option["value"],current_course_info[0])    
+        options[option['value']][current_course_info[0]] = list(ops.keys())
+        #print(a)
         a += 1
     sess.back()
 
 f = open('static/courses.json','w')
-f.write(str(options))
+f.write(str(options).replace("\'","\""))
 f.close()
