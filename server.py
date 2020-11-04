@@ -33,17 +33,19 @@ def ProcessCourseSubscribtionForm():
     MSU_PASSWORD = request.form.get('password', None)
     ALT_PIN = request.form.get('alt_pin', None) # TODO: Add Constraints to html form 
     
-    SUBJECT, COURSE_ID = request.form["course"].split()
-    CRN = request.form['crn'] # TODO: Add Constraints to html form 
+    SUBJECT = request.form["SUBJ"]
+    COURSE_ID = request.form['COURSE_ID'] 
+    CRN = request.form['CRN'] 
     new_student = Student(MSU_USERNAME, MSU_PASSWORD)
     
     msg = f"Added {MSU_USERNAME} to {SUBJECT} {COURSE_ID} : {CRN} list behind {'null'} others" 
-    
+
     if not manager.hasInfoFor(MSU_USERNAME):
         if MSU_PASSWORD != None: # If the user is attempting to use the registration service
             if websis.WebsisSessionIsActive(websis.LoginToWebsis(new_student)): # Validate Login Info
                 # Maybe Validate the Alt Pin 
                 manager.AddStudent(new_student)
+                
             else:
                 msg = "Websis Login Failed Check Info "
                 app.logger.error(f"Websis Login Failed Check Info for {MSU_USERNAME}")
@@ -65,8 +67,14 @@ def ScheduleWebsisCheck(t=60):
 
 
 if __name__ == "__main__":
+    import json
+    import os
+    
+    # https://www.reddit.com/r/flask/comments/2i102e/af_how_to_open_static_file_specifically_json/
+    SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+    json_url = os.path.join(SITE_ROOT, 'static', 'courses.json')
+    available_courses = json.load(open(json_url))
+    
     manager = Manager()
-    with open('courses.json','r') as inf:
-        available_courses = eval(inf.read())
     ScheduleWebsisCheck(600)  # Seconds
     app.run(debug=True)

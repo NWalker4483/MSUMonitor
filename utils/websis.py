@@ -8,6 +8,35 @@ def register_for_course(br_session, TERM_IN, SUBJECT, COURSE_ID, CRN):
     # ! WARN: Totally doesnt work
     return ""
 
+def get_options_for(br_session ,TERM_IN, SUBJECT, COURSE_ID):
+    options = dict()
+    html = get_courses_page(br_session, TERM_IN, SUBJECT, COURSE_ID)
+
+    soup = BeautifulSoup(html, features="html5lib")
+    table = soup.find("table", attrs={
+                        "summary": "This layout table is used to present the sections found"})
+    rows = table.find_all("tr")[2:]
+
+    # * Needs to be cleaned/commented desperately
+    # * TBH Cant remember why this chunk works
+    for row in rows:
+        if row == None:
+            continue
+        current_course_info = []
+        lines = str(row).split("\n")
+        for line in lines:
+            entry = BeautifulSoup(line, features="html5lib")
+            data = entry.text
+            if len(data) == 0:
+                continue
+            current_course_info.append(data)
+        Remaining, CRN = current_course_info[0], current_course_info[1]
+        
+        options[CRN] = int(Remaining) if Remaining != "C" else 0
+   
+        ###########################################
+    return options
+
 
 def get_courses_page(br_session, TERM_IN, SUBJECT, COURSE_ID) -> str:  # html
     # br_session must be logged in

@@ -3,7 +3,7 @@
 <head>
 
     <title>Welcome To Auto Registration</title>
-    <link rel="stylesheet" type="text/css" href="data/css.css">
+    <!--<link rel="stylesheet" type="text/css" href="data/css.css">-->
 
     <meta http-equiv="Content-Language" content="en-us">
 
@@ -102,132 +102,166 @@
                     $("input[name=password]").attr("disabled", "disabled");
                     $("input[name=alt_pin]").attr("disabled", "disabled");
                 }
+               
             });
+                
+            function removeOptions(selectElement) {
+                var i, L = selectElement.options.length - 1;
+                for (i = L; i >= 1; i--) {
+                    selectElement.remove(i);
+                }
+            }
+            var Courses = JSON.parse('{{ courses | tojson | safe}}');
+
+            $.each(Courses, function (key, value) {
+                            $('#SUBJ').append(`<option value="${key}">
+                                ${key} </option>`);
+                    });
+            $("#SUBJ").change(function () {
+                var course_id = document.getElementById("COURSE_ID");
+                var crn = document.getElementById("COURSE_ID");
+                removeOptions(course_id);
+                removeOptions(crn);
+                $.each(Courses, function (key, value) {
+                    if (key == $("#SUBJ :selected").val()) {
+                        $.each(value, function (ID, CRNS) {
+                            $('#COURSE_ID').append(`<option value="${ID}">
+                                ${ID} </option>`);
+                        });
+                    }
+                });
+            });
+            
+            $("#COURSE_ID").change(function () {
+                var crn = document.getElementById("CRN");
+                removeOptions(crn);
+                $.each(Courses, function (key, value) {
+                    if (key == $("#SUBJ :selected").val()) {
+                        $.each(value, function (ID, CRNS) {
+                            if (ID == $("#COURSE_ID :selected").val()) {
+                                
+                                $.each(CRNS, function (CRN) {
+                                    $('#CRN').append(
+                                    `<option value="${CRNS[CRN]}"> ${CRNS[CRN]} </option>`);});
+                            }
+                    });
+                }});});
         });
     </script>
 </head>
 
 <body><br><br><br>
-        <table align="center" border="50" cellpadding="0" cellspacing="0" width="196" bordercolor="orange"
-            style="border-collapse: collapse" height="288">
-            <tbody>
-                <tr>
-                    <td height="276" bgcolor="#000080" width="758">
-
-                        <div align="center">
-                            <div align="center" height="50" bgcolor="#000080" width="710"
-                                style="width: 737; height: 50"> <b>
-                                    <font color="#800000" size="5">
-                                        <a style="text-decoration: none" href="">
-                                            <font color="#FFFFFF">Automatic Registration</font>
-                                        </a></font>
-                                </b>
-                                <br><br>
-                                <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse"
-                                    width="100%" height="92">
-                                    <tbody>
-                                        <tr>
-                                            <td width="33%" bgcolor="#f5f6ce" height="92">&nbsp;</td>
-                                            <td width="33%" bgcolor="#f5f6ce" height="92">
-                                                <img border="0" src="{{url_for('static', filename='msu.png')}}">
-                                            </td>
-                                            <td width="34%" bgcolor="#f5f6ce" height="92">&nbsp;</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div align="center" style="width: 643; height: 470">
-
-                                <form align="center" action="subscribe" method="post">
-                                    <!----------->
-                                    <p>&nbsp;</p>
-                                    <p>&nbsp;</p>
-                                    <p>&nbsp;</p>
-                                    <p>
-                                        <b>
-                                            <font size="4">
-                                                <font color="#00FF00">Morgan State University has not partnered
-                                                    with </font>
-                                                <font color="#008000"> <a href="">
-                                                        <font color="#00FF00">US</font>
-                                                    </a></font>
-                                                <font color="#00FF00"> to expedite your registration.</font>
-                                            </font>
-                                        </b>
-                                    </p>
-                                    <p>
-                                        Enter your account ID Number to search the database
-                                        for your Refund status.&nbsp;
-                                        When the status is AVAILABLE_BM the refund is available to the option
-                                        you
-                                        have chosen with<b>
-                                            <a href="http://myonemoney.com/">
-                                                BankMobile
-                                            </a>
-                                        </b>
-                                        .&nbsp; If the
-                                        status is NOT_AVAILABLE_BM, the refund has been applied and it is being
-                                        processed.&nbsp; Please contact</font><b>
-                                            <a href="http://myonemoney.com/">BankMobile</a>
-                                        </b>
-                                        at 1-866-309-7452 or 7454 if you have any questions .</font><br>
-                                    </p><br>
+    <table align="center" border="50" cellpadding="0" cellspacing="0" width="196" bordercolor="orange"
+        style="border-collapse: collapse" height="288">
+        <tbody>
+            <tr>
+                <td height="300" bgcolor="#000080" width="758">
+                    <div align="center">
+                        <div align="center" height="50" bgcolor="#000080" width="710" style="width: 737; height: 50">
+                            <b>
+                                <font color="#800000" size="5">
+                                    <a style="text-decoration: none" href="">
+                                        <font color="#FFFFFF">Automatic Registration</font>
+                                    </a></font>
+                            </b>
+                            <br><br>
+                            <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse"
+                                width="100%" height="92">
+                                <tbody>
+                                    <tr>
+                                        <td width="33%" bgcolor="#f5f6ce" height="92">&nbsp;</td>
+                                        <td width="33%" bgcolor="#f5f6ce" height="92">
+                                            <img border="0" src="{{url_for('static', filename='msu.png')}}">
+                                        </td>
+                                        <td width="34%" bgcolor="#f5f6ce" height="92">&nbsp;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div align="center" style="width: 643; height: 470">
+                            <div>
+                                <!----------->
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>
                                     <b>
-                                        <font color="#FF0000">
-                                            Server Message:
-                                            {% if message %}
-                                            {{ message }}
-
-                                            {% endif %}
-
+                                        <font size="4">
+                                            <font color="#00FF00">Morgan State University has not partnered
+                                                with </font>
+                                            <font color="#008000"> <a href="">
+                                                    <font color="#00FF00">US</font>
+                                                </a></font>
+                                            <font color="#00FF00"> to expedite your registration.</font>
                                         </font>
                                     </b>
+                                </p>
+                                <p>
+                                    Enter your account ID Number to search the database
+                                    for your Refund status.&nbsp;
+                                    When the status is AVAILABLE_BM the refund is available to the option
+                                    you
+                                    have chosen with<b>
+                                        <a href="http://myonemoney.com/">
+                                            BankMobile
+                                        </a>
+                                    </b>
+                                    .&nbsp; If the
+                                    status is NOT_AVAILABLE_BM, the refund has been applied and it is being
+                                    processed.&nbsp; Please contact</font><b>
+                                        <a href="http://myonemoney.com/">BankMobile</a>
+                                    </b>
+                                    at 1-866-309-7452 or 7454 if you have any questions .</font><br>
+                                </p><br>
+                                <b>
+                                    <font color="#FF0000">
+                                        Server Message:
+                                        {% if message %}
+                                        {{ message }}
 
-                                    <!---------->
+                                        {% endif %}
 
-                                    <p>
-                                        <label for="username">Morgan Username: Don't add '@morgan.edu'</label>
-                                        <input type="text" name="username">
-                                    </p>
-                                    <p>
-                                        <label for="register">Attempt to Register?</label>
-                                        <input type="checkbox" name="register" />
-                                    </p>
-                                    <p>
-                                        <input placeholder="Password" type="password" name="password"
-                                            disabled="disabled">
-                                        <input placeholder="Alternate Pin" type="text" name="alt_pin"
-                                            disabled="disabled">
-                                    </p>
-                                    <p>
-                                        <label for="course">Course Options</label>
-                                        <select name="course" id="course">
-                                            {%for subject in courses%}
-                                            <optgroup label="{{subject}}">
-                                                {%for class in courses[subject]%}
-                                                <option value="{{subject}} {{class}}">{{subject}} {{class}}</option>
-                                                {%endfor%}
-                                            </optgroup>
-                                            {%endfor%}
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label for="crn">Course Registration Number</label>
-                                        <input type="text" name="crn">
-                                    </p>
-
-                                    <p>
-                                        <input type="submit">
-                                    </p>
-                                </form>
-
+                                    </font>
+                                </b>
                             </div>
-                            <br>
-                            <br>
+
+                            <!---------------------------------------------------->
+                            <form align="center" action="subscribe" method="post">
+                            <p>
+                                <label for="username">Morgan Username: Don't add '@morgan.edu'</label>
+                                <input type="text" name="username" required>
+                            </p>
+                            <p>
+                                <label for="register">Attempt to Register?</label>
+                                <input type="checkbox" name="register" />
+                            </p>
+                            <p>
+                                <input placeholder="Password" type="password" name="password" disabled="disabled">
+                                <input placeholder="Alternate Pin" type="text" name="alt_pin" disabled="disabled">
+                            </p>
+                            <p>
+                                <label for="SUBJ">Course Options</label>
+                                <select name="SUBJ" id="SUBJ" required>
+                                    <option disabled selected>Select your option</option>
+                                </select>
+                                <select name="COURSE_ID" id="COURSE_ID" required>
+                                    <option disabled selected>Select your option</option>
+                                </select>
+                                <select name="CRN" id="CRN" required>
+                                    <option disabled selected>Select your option</option>
+                                </select>
+                            </p>
+                            <p>
+                                <input type="submit">
+                            </p>
+                            </form>
+
                         </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </body>
+
 </html>

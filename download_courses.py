@@ -3,6 +3,7 @@ from utils.websis import CURRENT_TERM_ID
 from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 import auth
+import utils.websis as websis
 login_url = "https://lbapp1nprod.morgan.edu/ssomanager/c/SSB"
     
 sess = mechanize.Browser()
@@ -32,7 +33,7 @@ UserSpecifiedParams1 = {"term_in": CURRENT_TERM_ID, "sel_subj": "dummy"}
 a = 0
 for option in soup.find("select").find_all('option'):
     UserSpecifiedParams2 = {"sel_subj": option['value']}
-    options[option['value']] = []
+    options[option['value']] = dict()
 
     GenericParamsEncoded = urlencode(GenericParams)
     UserSpecifiedParamsEncoded = urlencode(
@@ -57,9 +58,12 @@ for option in soup.find("select").find_all('option'):
             if len(data) == 0:
                 continue
             current_course_info.append(data)
-        options[option['value']].append(current_course_info[0])
+        websis.get_courses_page(sess,websis.CURRENT_TERM_ID,option["value"],current_course_info[0])    
+        options[option['value']][current_course_info[0]] = ["000000"]
+        print(a)
+        a += 1
     sess.back()
 
-f = open('helloworld','w')
+f = open('static/courses.json','w')
 f.write(str(options))
 f.close()
