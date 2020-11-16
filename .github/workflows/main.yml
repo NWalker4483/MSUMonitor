@@ -14,7 +14,7 @@ jobs:
     - name: repo-sync
       uses: wei/git-sync@v1
       env:
-        SOURCE_REPO: "https://github.com/NWalker4483/AutoRegistration.git"
+        SOURCE_REPO: "https://github.com/NWalker4483/MSUMonitor.git"
         SOURCE_BRANCH: "master"
         DESTINATION_REPO: ${{ secrets.GLITCH_GIT_URL }}
         DESTINATION_BRANCH: "master"
