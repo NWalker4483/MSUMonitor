@@ -1,4 +1,8 @@
 
+import logging
+
+log = logging.getLogger("AutoRegistration.sub")
+
 def Clear(manager, cmd_str):
     num = len(manager.getStudentNames())
     names = manager.getStudentNames().copy()
