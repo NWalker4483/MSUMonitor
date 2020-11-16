@@ -86,7 +86,7 @@ if __name__ == "__main__":
     available_courses = json.load(open(json_url))
     
     manager = Manager()
-    ScheduleWebsisCheck(600)  # Seconds
+    ScheduleWebsisCheck(15 * 60)  # Seconds
 
     if 'liveconsole' not in gethostname():
         app.run(debug=True)
