@@ -76,6 +76,7 @@ def ScheduleWebsisCheck(t=60):
 
 
 if __name__ == "__main__":
+    from socket import gethostname
     import json
     import os
     
@@ -86,4 +87,6 @@ if __name__ == "__main__":
     
     manager = Manager()
     ScheduleWebsisCheck(600)  # Seconds
-    app.run(debug=True)
+
+    if 'liveconsole' not in gethostname():
+        app.run(debug=True)
