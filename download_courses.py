@@ -1,3 +1,4 @@
+# ! NOTE: This process is painfully slow just set it and forget it
 import mechanize
 from utils.websis import CURRENT_TERM_ID
 from urllib.parse import urlencode

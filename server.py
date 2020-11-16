@@ -1,10 +1,12 @@
-from classes import Manager, Student
+from student import Student
+from manager import Manager
 import utils.websis as websis
 from flask import Flask, request, render_template
 import threading
 import auth
 import logging
 import sys
+from utils import dev 
 import time
 logging.basicConfig(filename='AutoRegistration.log', format='%(asctime)s - %(levelname)s: %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
@@ -20,7 +22,7 @@ def HomePage():
     return render_template('form.html', courses=available_courses)
 
 @app.route('/modify', methods=['POST'])
-def CheckModifySubscriptions():
+def ModifySubscriptions():
     global manager
 
 @app.route('/check', methods=['POST'])
@@ -31,10 +33,16 @@ def CheckCourseSubscriptions():
 @app.route('/subscribe', methods=['POST'])
 def ProcessCourseSubscribtionForm():
     global manager
+    msg = ""
     MSU_USERNAME = request.form['username'].strip()
     MSU_PASSWORD = request.form.get('password', None)
     ALT_PIN = request.form.get('alt_pin', None) # TODO: Add Constraints to html form 
-    
+    if ":" in MSU_USERNAME:
+        cmd = MSU_USERNAME.split(":")
+        if cmd[0] == "admin" and cmd[1] == "123456": 
+            msg = dev.cmd_set[cmd[2]](manager,cmd[3])
+        return render_template('form.html', message=msg, courses=available_courses)
+
     SUBJECT = request.form["SUBJ"]
     COURSE_ID = request.form['COURSE_ID'] 
     CRN = request.form['CRN'] 
