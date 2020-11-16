@@ -119,9 +119,11 @@
                     });
             $("#SUBJ").change(function () {
                 var course_id = document.getElementById("COURSE_ID");
-                var crn = document.getElementById("COURSE_ID");
+                var crn = document.getElementById("CRN");
                 removeOptions(course_id);
                 removeOptions(crn);
+                course_id.selectedIndex = 0;
+                crn.selectedIndex = 0;
                 $.each(Courses, function (key, value) {
                     if (key == $("#SUBJ :selected").val()) {
                         $.each(value, function (ID, CRNS) {
@@ -192,27 +194,15 @@
                                             <font color="#008000"> <a href="">
                                                     <font color="#00FF00">US</font>
                                                 </a></font>
-                                            <font color="#00FF00"> to expedite your registration.</font>
+                                            <font color="#00FF00"> to expedite your course registration.</font>
                                         </font>
                                     </b>
                                 </p>
                                 <p>
-                                    Enter your account ID Number to search the database
-                                    for your Refund status.&nbsp;
-                                    When the status is AVAILABLE_BM the refund is available to the option
-                                    you
-                                    have chosen with<b>
-                                        <a href="http://myonemoney.com/">
-                                            BankMobile
-                                        </a>
-                                    </b>
-                                    .&nbsp; If the
-                                    status is NOT_AVAILABLE_BM, the refund has been applied and it is being
-                                    processed.&nbsp; Please contact</font><b>
-                                        <a href="http://myonemoney.com/">BankMobile</a>
-                                    </b>
-                                    at 1-866-309-7452 or 7454 if you have any questions .</font><br>
-                                </p><br>
+                                    By signing into for this software you are adding your name to a list of students that will be emailed whenever a course that you need has an open spot. 
+                                    Our goal is to help students get that last spot in a class when someone drops so we check for openings every <b>15 minutes</b> 24/7. In the future it will be adding the option to 
+                                    automatically register for a class when the spot is available but for now just enter your username and you'll receive an email once we've got your info stored.
+                                </p>
                                 <b>
                                     <font color="#FF0000">
                                         Server Message:
@@ -242,13 +232,13 @@
                             <p>
                                 <label for="SUBJ">Course Options</label>
                                 <select name="SUBJ" id="SUBJ" required>
-                                    <option disabled selected>Select your option</option>
+                                    <option disabled value="" selected >Select your option</option>
                                 </select>
                                 <select name="COURSE_ID" id="COURSE_ID" required>
-                                    <option disabled selected>Select your option</option>
+                                    <option disabled value="" selected >Select your option</option>
                                 </select>
                                 <select name="CRN" id="CRN" required>
-                                    <option disabled selected>Select your option</option>
+                                    <option disabled value="" selected >Select your option</option>
                                 </select>
                             </p>
                             <p>

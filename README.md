@@ -5,9 +5,9 @@ Automatically monitor and register for courses when availabilities arise
 ## General 
 * Implement Check ```WebsisSessionIsActive``` Function to check logins
 * Implement course registration in ```register_for_course``` Function
-* Implement system and interface testing
+* Implement automated system and interface testing
 * As it currently works sending notification emails blocks the program. In the future this should be done in a seperate thread.
-* Check that all important operations/changes are logged (Use your personal descretion fo what is important)
+* Check that all important operations/changes are logged (Use your personal descretion for what is important)
 * Set up somewhere for users to email the development team
 ## Darius 
 * Create Email Templates Files for various notifications 

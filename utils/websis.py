@@ -40,7 +40,6 @@ def get_options_for(br_session ,TERM_IN, SUBJECT, COURSE_ID):
         ###########################################
     return options
 
-
 def get_courses_page(br_session, TERM_IN, SUBJECT, COURSE_ID) -> str:  # html
     # br_session must be logged in
     get_course_url = "https://lbssbnprod.morgan.edu/nprod/bwskfcls.P_GetCrse"
@@ -67,7 +66,6 @@ def WebsisSessionIsActive(sess: mechanize.Browser) -> bool:  # NOTE Not Done
     except:
         pass
     return False
-
 
 def LoginToWebsis(student):
     login_url = "https://lbapp1nprod.morgan.edu/ssomanager/c/SSB"
