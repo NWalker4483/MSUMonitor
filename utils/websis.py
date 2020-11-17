@@ -76,8 +76,8 @@ def LoginToWebsis(student):
         br.select_form(id="loginForm")
         br["username"], br["password"] = student.getLoginInfo()
         br.submit()
-        return br
+        return True, br
     except Exception as e:
-        raise(e)
+        return False, br
 if __name__ == "__main__":
     pass

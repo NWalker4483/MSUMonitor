@@ -18,8 +18,6 @@ Automatically monitor and register for courses when availabilities arise
 * * Course_registration_unsuccessful.txt # A spot is available and couldn't be taken i.e Prerequsite/ Major of study restrictions
 * * Any other cases you can think of
 ## Nile 
-* Write a script to keep the glitch project active or find another hosting service
-* https://support.glitch.com/t/how-to-make-a-glitch-project-to-run-constantly/2439
-* https://medium.com/@aadibajpai/deploying-to-pythonanywhere-via-github-6f967956e664
+* * Implement Something to protect user data from system crashes
 ## Charnelle 
 * Give users the option to remove/moniter a course subscription manually 

@@ -11,7 +11,7 @@ class Manager:
     def __init__(self):
         # * Only one user is required to check any given course we use a master user for reliability
         self.master = Student(auth.username, auth.password)
-        self.__master_sess = websis.LoginToWebsis(self.master)
+        self.__master_sess = websis.LoginToWebsis(self.master)[1]
         self.__students = dict()  # {uname: Student}
 
     def getMasterSess(self):
@@ -19,26 +19,17 @@ class Manager:
 
     def CheckCourseAvailability(self):
         # Aggregate Course Requests
-        courses2check = set()  # {(TERM_IN,SUBJECT,COURSE_ID)}
-        crns2check = dict()  # {CRN: [Student()]}
+        course_cache = dict()
         for student in self.__students.values():
             for TERM_IN, SUBJECT, COURSE_ID, CRN in student.getNeededCourses():
-                courses2check.add((TERM_IN, SUBJECT, COURSE_ID))
-                if CRN in crns2check:
-                    crns2check[CRN].append(student)
-                else:
-                    crns2check[CRN] = [student]
-        # Fufill Course Requests
-        for TERM_IN, SUBJECT, COURSE_ID in courses2check:
-            log.info(
-                f"Checking {TERM_IN} {SUBJECT} {COURSE_ID} for availabilities")
-            options = websis.get_options_for(websis.LoginToWebsis(
-                self.master), TERM_IN, SUBJECT, COURSE_ID)
-            for CRN in options:
-                if options[CRN] > 0:
-                    if CRN in crns2check:
+                if (TERM_IN, SUBJECT, COURSE_ID) not in course_cache:
+                    course_cache[(TERM_IN, SUBJECT, COURSE_ID)] = websis.get_options_for(websis.LoginToWebsis(self.master)[1], TERM_IN, SUBJECT, COURSE_ID)
+                    log.info(f"Checking {TERM_IN} {SUBJECT} {COURSE_ID} for availabilities")
+
+                for crn_option in course_cache[(TERM_IN, SUBJECT, COURSE_ID)]:
+                    if course_cache[(TERM_IN, SUBJECT, COURSE_ID)][crn_option] > 0:
                         # ? Should be sorted by the order they were added in
-                        for student in crns2check[CRN]:
+                        if crn_option == CRN:
                             # If their password is not None
                             if student.getLoginInfo()[1] != None:
                                 student.registerFor(
