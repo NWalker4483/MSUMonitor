@@ -20,5 +20,6 @@ Automatically monitor and register for courses when availabilities arise
 ## Nile 
 * Write a script to keep the glitch project active or find another hosting service
 * https://support.glitch.com/t/how-to-make-a-glitch-project-to-run-constantly/2439
+* https://medium.com/@aadibajpai/deploying-to-pythonanywhere-via-github-6f967956e664
 ## Charnelle 
 * Give users the option to remove/moniter a course subscription manually 

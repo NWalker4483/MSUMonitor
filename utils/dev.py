@@ -4,13 +4,16 @@ import logging
 log = logging.getLogger("AutoRegistration.sub")
 
 def Clear(manager, cmd_str):
-    num = len(manager.getStudentNames())
     names = manager.getStudentNames().copy()
+    num = len(names)
     for name in names:
         manager.RemoveStudent(name)
-    
-    print(len(manager.getStudentNames()))
     return f"Removed all {num} students from the system"
+    
+def List(manager, cmd_str):
+    return str(manager.getStudentNames())
+    
 cmd_set = {
-    "clear": Clear
+    "clear": Clear,
+    "list": List,
 }

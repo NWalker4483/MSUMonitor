@@ -1,0 +1,35 @@
+name: msu_env
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - ca-certificates=2020.10.14=0
+  - certifi=2020.6.20=pyhd3eb1b0_3
+  - libcxx=10.0.0=1
+  - libedit=3.1.20191231=h1de35cc_1
+  - libffi=3.3=hb1e8313_2
+  - ncurses=6.2=h0a44026_1
+  - openssl=1.1.1h=haf1e3a3_0
+  - pip=20.2.4=py37hecd8cb5_0
+  - python=3.7.9=h26836e1_0
+  - readline=8.0=h1de35cc_0
+  - setuptools=50.3.1=py37hecd8cb5_1
+  - sqlite=3.33.0=hffcf06c_0
+  - tk=8.6.10=hb0a8c7a_0
+  - wheel=0.35.1=pyhd3eb1b0_0
+  - xz=5.2.5=h1de35cc_0
+  - zlib=1.2.11=h1de35cc_3
+  - pip:
+    - beautifulsoup4==4.9.3
+    - click==7.1.2
+    - flask==1.1.2
+    - html5lib==1.1
+    - itsdangerous==1.1.0
+    - jinja2==2.11.2
+    - markupsafe==1.1.1
+    - mechanize==0.4.5
+    - six==1.15.0
+    - soupsieve==2.0.1
+    - webencodings==0.5.1
+    - werkzeug==1.0.1
+prefix: /usr/local/anaconda3/envs/msu_env
