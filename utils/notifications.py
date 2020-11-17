@@ -27,7 +27,8 @@ def read_template(filename):
         template_file_content = template_file.read()
     return Template(template_file_content)
 
-
+def verifyEmail(email):
+    return True
 def notifyStudent(USERNAME, TERM_IN, SUBJECT, COURSE_ID, CRN, status=0):
     message_template = read_template("utils/messages/"+template_list[status])
 

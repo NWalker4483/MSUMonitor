@@ -42,17 +42,16 @@ def ProcessCourseSubscribtionForm():
         if cmd[0] == "admin" and cmd[1] == "123456": 
             msg = dev.cmd_set[cmd[2]](manager,cmd[3])
         return render_template('form.html', message=msg, courses=available_courses)
-
+    
     SUBJECT = request.form["SUBJ"]
     COURSE_ID = request.form['COURSE_ID'] 
     CRN = request.form['CRN'] 
     new_student = Student(MSU_USERNAME, MSU_PASSWORD)
     
-    msg = f"Added {MSU_USERNAME} to {SUBJECT} {COURSE_ID} : {CRN} list behind {'null'} others" 
-
+    msg = f"Failed to process {MSU_USERNAME}. Please check your login info"
     if not manager.hasInfoFor(MSU_USERNAME):
         if MSU_PASSWORD != None: # If the user is attempting to use the registration service
-            if websis.WebsisSessionIsActive(websis.LoginToWebsis(new_student)): # Validate Login Info
+            if websis.LoginToWebsis(new_student)[0]: # Validate Login Info
                 # Maybe Validate the Alt Pin 
                 manager.AddStudent(new_student)
             else:
@@ -64,7 +63,9 @@ def ProcessCourseSubscribtionForm():
     if manager.hasInfoFor(MSU_USERNAME):
         manager.AddCourseSubscribtion(
             websis.CURRENT_TERM_ID, SUBJECT, COURSE_ID, CRN, MSU_USERNAME)
+        msg = f"Added {MSU_USERNAME} to {SUBJECT} {COURSE_ID} : {CRN} list."
         app.logger.info(msg)
+
 
     return render_template('form.html', message=msg, courses=available_courses)
 
@@ -80,13 +81,16 @@ if __name__ == "__main__":
     import json
     import os
     
-    # https://www.reddit.com/r/flask/comments/2i102e/af_how_to_open_static_file_specifically_json/
-    SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-    json_url = os.path.join(SITE_ROOT, 'static', 'courses.json')
-    available_courses = json.load(open(json_url))
-    
-    manager = Manager()
-    ScheduleWebsisCheck(15 * 60)  # Seconds
+    try:
+        # https://www.reddit.com/r/flask/comments/2i102e/af_how_to_open_static_file_specifically_json/
+        SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+        json_url = os.path.join(SITE_ROOT, 'static', 'courses.json')
+        available_courses = json.load(open(json_url))
+        
+        manager = Manager()
+        ScheduleWebsisCheck(15 * 60)  # Seconds
 
-    if 'liveconsole' not in gethostname():
         app.run(debug=True)
+    finally:# Save Manager
+        print("dfghjk")
+        pass
