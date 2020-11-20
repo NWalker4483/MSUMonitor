@@ -23,8 +23,9 @@ class Student:
         self.__courses.add((TERM_IN, SUBJECT, COURSE_ID, CRN))
         self.attempts[(TERM_IN, SUBJECT, COURSE_ID, CRN)] = 0
         # Send Confirmation Email
+        status = 1 if self.__password == None else 0 
         notify.notifyStudent(self.username, TERM_IN,
-                             SUBJECT, COURSE_ID, CRN, 0)
+                             SUBJECT, COURSE_ID, CRN, status)
  
     def removeNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str, registered=True):
         self.__courses.remove((TERM_IN, SUBJECT, COURSE_ID, CRN))
