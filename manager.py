@@ -22,7 +22,7 @@ class Manager:
         course_cache = dict()
         # ? Should be sorted by the order they were added in
         for student in self.__students.values():
-            for TERM_IN, SUBJECT, COURSE_ID, CRN in student.getNeededCourses():
+            for TERM_IN, SUBJECT, COURSE_ID, CRN in student.getNeededCourses().copy():
                 course = (TERM_IN, SUBJECT, COURSE_ID)
                 if course not in course_cache:
                     course_cache[course] = websis.get_options_for(websis.LoginToWebsis(self.master)[1], TERM_IN, SUBJECT, COURSE_ID)
@@ -37,7 +37,7 @@ class Manager:
                     else:
                         notify.notifyStudent(
                             student.username, TERM_IN, SUBJECT, COURSE_ID, CRN, 2)
-                    if student.attempts[(TERM_IN, SUBJECT, COURSE_ID, CRN)] < 4:
+                    if student.attempts[(TERM_IN, SUBJECT, COURSE_ID, CRN)] < 3:
                         student.attempts[(TERM_IN, SUBJECT, COURSE_ID, CRN)] += 1 
                     else: 
                         self.RemoveCourseSubscribtion(TERM_IN, SUBJECT, COURSE_ID, CRN, student.username)
