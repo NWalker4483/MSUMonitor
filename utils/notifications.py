@@ -4,7 +4,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 MY_ADDRESS = 'msu.register.tool@gmail.com'
-PASSWORD = 'MSURegister1'
+PASSWORD = 'MSURegister2'
 MAIL_SUBJECT = "MSU Register Tool Update"
 SERVER_ADDRESS = "smtp.gmail.com"
 PORT = 587
@@ -12,7 +12,7 @@ PORT = 587
 template_list = [
     "Added_to_waitlist_with_registration.txt",
     "Added_to_waitlist_without_registration.txt",
-    "Course_availability_found.txt ",
+    "Course_availability_found.txt",
     "Course_registration_successful.txt",
     "Course_registration_unsuccessful.txt"
 ]

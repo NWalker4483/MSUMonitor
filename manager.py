@@ -11,7 +11,7 @@ class Manager:
     def __init__(self):
         # * Only one user is required to check any given course we use a master user for reliability
         self.master = Student(auth.username, auth.password)
-        self.__master_sess = websis.LoginToWebsis(self.master)[1]
+        self.__master_sess = None #websis.LoginToWebsis(self.master)[1]
         self.__students = dict()  # {uname: Student}
 
     def getMasterSess(self):
@@ -20,26 +20,27 @@ class Manager:
     def CheckCourseAvailability(self):
         # Aggregate Course Requests
         course_cache = dict()
+        # ? Should be sorted by the order they were added in
         for student in self.__students.values():
             for TERM_IN, SUBJECT, COURSE_ID, CRN in student.getNeededCourses():
-                if (TERM_IN, SUBJECT, COURSE_ID) not in course_cache:
-                    course_cache[(TERM_IN, SUBJECT, COURSE_ID)] = websis.get_options_for(websis.LoginToWebsis(self.master)[1], TERM_IN, SUBJECT, COURSE_ID)
+                course = (TERM_IN, SUBJECT, COURSE_ID)
+                if course not in course_cache:
+                    course_cache[course] = websis.get_options_for(websis.LoginToWebsis(self.master)[1], TERM_IN, SUBJECT, COURSE_ID)
                     log.info(f"Checking {TERM_IN} {SUBJECT} {COURSE_ID} for availabilities")
-
-                for crn_option in course_cache[(TERM_IN, SUBJECT, COURSE_ID)]:
-                    if course_cache[(TERM_IN, SUBJECT, COURSE_ID)][crn_option] > 0:
-                        # ? Should be sorted by the order they were added in
-                        if crn_option == CRN:
-                            # If their password is not None
-                            if student.getLoginInfo()[1] != None:
-                                student.registerFor(
-                                    TERM_IN, SUBJECT, COURSE_ID, CRN)
-                                if (len(student.getNeededCourses()) == 0):
-                                    self.RemoveStudent(student.username)
-                            else:
-                                notify.notifyStudent(
-                                    student.username, TERM_IN, SUBJECT, COURSE_ID, CRN, 2)
-
+                if course_cache[course].get(CRN, 0) > 0:
+                    # If their password is not None
+                    if student.getLoginInfo()[1] != None:
+                        student.registerFor(
+                            TERM_IN, SUBJECT, COURSE_ID, CRN)
+                        if (len(student.getNeededCourses()) == 0):
+                            self.RemoveStudent(student.username)
+                    else:
+                        notify.notifyStudent(
+                            student.username, TERM_IN, SUBJECT, COURSE_ID, CRN, 2)
+                    if student.attempts[(TERM_IN, SUBJECT, COURSE_ID, CRN)] < 4:
+                        student.attempts[(TERM_IN, SUBJECT, COURSE_ID, CRN)] += 1 
+                    else: 
+                        self.RemoveCourseSubscribtion(TERM_IN, SUBJECT, COURSE_ID, CRN, student.username)
     def AddCourseSubscribtion(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str, username: str):
         self.__students[username].addNeededCourse(
             TERM_IN, SUBJECT, COURSE_ID, CRN)

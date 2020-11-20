@@ -88,9 +88,11 @@ if __name__ == "__main__":
         available_courses = json.load(open(json_url))
         
         manager = Manager()
-        ScheduleWebsisCheck(15 * 60)  # Seconds
+        ScheduleWebsisCheck(30)  # Seconds
 
-        app.run(debug=True)
+        app.run(threaded=True)
+    except Exception as e:
+        print(e)
     finally:# Save Manager
         print("dfghjk")
         pass

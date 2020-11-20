@@ -9,6 +9,8 @@ def register_for_course(br_session, TERM_IN, SUBJECT, COURSE_ID, CRN):
     return ""
 
 def get_options_for(br_session ,TERM_IN, SUBJECT, COURSE_ID):
+    if (SUBJECT, COURSE_ID) == ("TEST","101"):
+        return dict({"111111":1})
     options = dict()
     html = get_courses_page(br_session, TERM_IN, SUBJECT, COURSE_ID)
 
@@ -38,6 +40,7 @@ def get_options_for(br_session ,TERM_IN, SUBJECT, COURSE_ID):
             options[CRN] = 0 
    
         ###########################################
+  
     return options
 
 def get_courses_page(br_session, TERM_IN, SUBJECT, COURSE_ID) -> str:  # html

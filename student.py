@@ -13,6 +13,7 @@ class Student:
         self.username = username.strip()
         self.__password = password  # ! Shouldn't be plaintext in the future
         self.__courses = set()  # set((TERM_IN, SUBJECT, COURSE_ID, CRN))
+        self.attempts = dict()  # dict((TERM_IN, SUBJECT, COURSE_ID, CRN))
         self.br = None  # Logged In Websis Browser Session
 
     def getNeededCourses(self) -> set:
@@ -20,10 +21,11 @@ class Student:
 
     def addNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str):
         self.__courses.add((TERM_IN, SUBJECT, COURSE_ID, CRN))
+        self.attempts[(TERM_IN, SUBJECT, COURSE_ID, CRN)] = 0
         # Send Confirmation Email
         notify.notifyStudent(self.username, TERM_IN,
                              SUBJECT, COURSE_ID, CRN, 0)
-
+ 
     def removeNeededCourse(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str, registered=True):
         self.__courses.remove((TERM_IN, SUBJECT, COURSE_ID, CRN))
         # Send Confirmation Email
