@@ -11,7 +11,7 @@ class Manager:
     def __init__(self):
         # * Only one user is required to check any given course we use a master user for reliability
         self.master = Student(auth.username, auth.password)
-        self.__master_sess = None #websis.LoginToWebsis(self.master)[1]
+        self.__master_sess = websis.LoginToWebsis(self.master)[1]
         self.__students = dict()  # {uname: Student}
 
     def getMasterSess(self):

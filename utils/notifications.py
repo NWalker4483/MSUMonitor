@@ -2,6 +2,7 @@ import smtplib
 from string import Template
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from threading import Thread
 
 MY_ADDRESS = 'msu.register.tool@gmail.com'
 PASSWORD = 'MSURegister2'
@@ -16,49 +17,50 @@ template_list = [
     "Course_registration_successful.txt",
     "Course_registration_unsuccessful.txt"
 ]
+class EmailThread(Thread):
+    def __init__(self):
+        self.msg = None 
+        Thread.__init__(self)
+    def setup(self, USERNAME, TERM_IN, SUBJECT, COURSE_ID, CRN, status=0):
+        msg = MIMEMultipart()  # create a message
 
+        # setup the parameters of the message
+        msg['From'] = MY_ADDRESS
+        msg['To'] = USERNAME + "@morgan.edu" 
+        msg['Subject'] = MAIL_SUBJECT
 
-def read_template(filename):
-    """
-    Returns a Template object comprising the contents of the 
-    file specified by filename.
-    """
-    with open(filename, 'r', encoding='utf-8') as template_file:
-        template_file_content = template_file.read()
-    return Template(template_file_content)
+        info = {
+            'USERNAME': USERNAME,
+            'TERM_IN': TERM_IN,
+            'SUBJECT': SUBJECT,
+            'COURSE_ID': COURSE_ID,
+            'CRN': CRN,
+        }
+
+        with open("utils/messages/"+template_list[status], 'r', encoding='utf-8') as template_file:
+            template_file_content = template_file.read()
+        message_template = Template(template_file_content) 
+
+        # add in the actual person name to the message template
+        message = message_template.substitute(**info)
+        msg.attach(MIMEText(message, 'plain'))
+        self.msg = msg 
+
+    def send(self):
+        self.start()
+
+    def run (self):
+        
+        # set up the SMTP server AND Login
+        s = smtplib.SMTP(host=SERVER_ADDRESS, port=PORT)
+        s.starttls()
+        s.login(MY_ADDRESS, PASSWORD)
+        s.send_message(self.msg)
+        s.quit()
 
 def verifyEmail(email):
     return True
 def notifyStudent(USERNAME, TERM_IN, SUBJECT, COURSE_ID, CRN, status=0):
-    message_template = read_template("utils/messages/"+template_list[status])
-
-    # set up the SMTP server AND Login
-    s = smtplib.SMTP(host=SERVER_ADDRESS, port=PORT)
-    s.starttls()
-    s.login(MY_ADDRESS, PASSWORD)
-
-    msg = MIMEMultipart()  # create a message
-
-    # setup the parameters of the message
-    msg['From'] = MY_ADDRESS
-    msg['To'] = USERNAME + "@morgan.edu"
-
-    msg['Subject'] = MAIL_SUBJECT
-
-    info = {
-        'USERNAME': USERNAME,
-        'TERM_IN': TERM_IN,
-        'SUBJECT': SUBJECT,
-        'COURSE_ID': COURSE_ID,
-        'CRN': CRN,
-    }
-
-    # add in the actual person name to the message template
-    message = message_template.substitute(**info)
-
-    msg.attach(MIMEText(message, 'plain'))
-
-    # send the message via the server set up earlier.
-    s.send_message(msg)
-    # Terminate the SMTP session and close the connection
-    s.quit()
+    email = EmailThread()
+    email.setup(USERNAME, TERM_IN, SUBJECT, COURSE_ID, CRN, status=status)
+    email.send()
