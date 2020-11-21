@@ -13,7 +13,13 @@ def Clear(manager, cmd_str):
 def List(manager, cmd_str):
     return str(manager.getStudentNames())
     
+def Check(manager, cmd_str):
+    try:
+        return str("")
+    except:
+        return str("")
 cmd_set = {
     "clear": Clear,
     "list": List,
+    "check": Check
 }
