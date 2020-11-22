@@ -38,10 +38,12 @@ def ProcessCourseSubscribtionForm():
     MSU_PASSWORD = request.form.get('password', None)
     ALT_PIN = request.form.get('alt_pin', None) # TODO: Add Constraints to html form 
     if ":" in MSU_USERNAME:
-        cmd = MSU_USERNAME.split(":")
-        if cmd[0] == "admin" and cmd[1] == "123456": 
-            msg = dev.cmd_set[cmd[2]](manager,cmd[3])
-        return render_template('form.html', message=msg, courses=available_courses)
+        try:
+            cmd = MSU_USERNAME.split(":")
+            if cmd[0] == "admin" and cmd[1] == "123456": 
+                msg = dev.cmd_set[cmd[2]](manager,cmd[3])
+        finally:
+            return render_template('form.html', message=msg, courses=available_courses)
     
     SUBJECT = request.form["SUBJ"]
     COURSE_ID = request.form['COURSE_ID'] 
@@ -74,24 +76,22 @@ def ScheduleWebsisCheck(t=60):
     manager.CheckCourseAvailability()
     threading.Timer(t, ScheduleWebsisCheck).start()
 
+import json
+import os
+# https://www.reddit.com/r/flask/comments/2i102e/af_how_to_open_static_file_specifically_json/
+SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+json_url = os.path.join(SITE_ROOT, 'static', 'courses.json')
+available_courses = json.load(open(json_url))
+
+manager = Manager()
+ScheduleWebsisCheck(15*60)  # Seconds
+
 
 if __name__ == "__main__":
-    from socket import gethostname
-    import json
-    import os
-    
     try:
-        # https://www.reddit.com/r/flask/comments/2i102e/af_how_to_open_static_file_specifically_json/
-        SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-        json_url = os.path.join(SITE_ROOT, 'static', 'courses.json')
-        available_courses = json.load(open(json_url))
-        
-        manager = Manager()
-        ScheduleWebsisCheck(15*60)  # Seconds
-
         app.run(threaded=True)
     except Exception as e:
         print(e)
-    finally:# Save Manager
+    finally: # Save Manager
         print("dfghjk")
         pass
