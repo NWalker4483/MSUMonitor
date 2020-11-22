@@ -1,4 +1,4 @@
-
+# A set of tools that the devs can access through the frontend 
 import logging
 
 log = logging.getLogger("AutoRegistration.sub")
@@ -18,8 +18,13 @@ def Check(manager, cmd_str):
         return str("")
     except:
         return str("")
+
+def Remove(manager, cmd_str):
+    manager.RemoveStudent(cmd_str.strip())
+    return f"Removed {cmd_str}"
 cmd_set = {
     "clear": Clear,
     "list": List,
+    "remove": Remove,
     "check": Check
 }

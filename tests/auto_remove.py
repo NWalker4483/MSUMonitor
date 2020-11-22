@@ -10,6 +10,6 @@ manager.AddStudent(student)
 manager.AddCourseSubscribtion("202070","TEST","101","111111","niwal7")
 for i in range(4): # Subscriptions should be removed after four tries
     manager.CheckCourseAvailability()  
-    print(f"Check num {i}")
+    print(f"Check {i}")
 assert(len(student.getNeededCourses())==0)
 print("Test Passed")

@@ -66,7 +66,6 @@ def ProcessCourseSubscribtionForm():
         msg = f"Added {MSU_USERNAME} to {SUBJECT} {COURSE_ID} : {CRN} list."
         app.logger.info(msg)
 
-
     return render_template('form.html', message=msg, courses=available_courses)
 
 
@@ -88,7 +87,7 @@ if __name__ == "__main__":
         available_courses = json.load(open(json_url))
         
         manager = Manager()
-        ScheduleWebsisCheck(30)  # Seconds
+        ScheduleWebsisCheck(15*60)  # Seconds
 
         app.run(threaded=True)
     except Exception as e:

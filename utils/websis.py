@@ -36,7 +36,7 @@ def get_options_for(br_session ,TERM_IN, SUBJECT, COURSE_ID):
         try:
             options[CRN] = int(Remaining)
         except Exception as e:
-            #print(e)
+            print(e)
             options[CRN] = 0 
    
         ###########################################
