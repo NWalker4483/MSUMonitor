@@ -1,2 +1,2 @@
-${USERNAME},${TERM_IN},${SUBJECT},${COURSE_ID},${CRN}
-Course_availability_found
+Thank you ${USERNAME} for using the MSU monitor system,
+    We've found an opening in ${SUBJECT}:${COURSE_ID}:${CRN} in the term ${TERM_IN}. Due to the options you chose upon submitting our form we won't try and register for you but you should grab your spot ASAP before someone else does.

@@ -1,13 +1,12 @@
 # ! NOTE: This process is painfully slow just set it and forget it
 import mechanize
-from utils.websis import CURRENT_TERM_ID
 from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 import auth
 import utils.websis as websis
 import tqdm
 login_url = "https://lbapp1nprod.morgan.edu/ssomanager/c/SSB"
-    
+CURRENT_TERM_ID = "202070"
 sess = mechanize.Browser()
 sess.set_handle_robots(False)  # ignore robots
 sess.open(login_url)

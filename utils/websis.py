@@ -35,10 +35,8 @@ def get_options_for(br_session ,TERM_IN, SUBJECT, COURSE_ID):
         Remaining, CRN = current_course_info[0], current_course_info[1]
         try:
             options[CRN] = int(Remaining)
-        except Exception as e:
-            #print(e)
+        except ValueError:# Remaining == C or NR
             options[CRN] = 0 
-   
         ###########################################
   
     return options

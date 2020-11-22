@@ -50,7 +50,6 @@ class EmailThread(Thread):
         self.start()
 
     def run (self):
-        
         # set up the SMTP server AND Login
         s = smtplib.SMTP(host=SERVER_ADDRESS, port=PORT)
         s.starttls()
@@ -58,7 +57,16 @@ class EmailThread(Thread):
         s.send_message(self.msg)
         s.quit()
 
-def verifyEmail(email):
+def verifyEmail(email): # https://stackoverflow.com/questions/22233848/how-to-verify-an-email-address-in-python-using-smtplib
+    # server = smtplib.SMTP(SERVER_ADDRESS, PORT)
+    # server.connect()
+    # server.set_debuglevel(True)
+    # try:
+    #     server.verify(email)
+    # except Exception:
+    #     return False
+    # finally:
+    #     server.quit()
     return True
 def notifyStudent(USERNAME, TERM_IN, SUBJECT, COURSE_ID, CRN, status=0):
     email = EmailThread()
