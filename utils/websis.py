@@ -8,7 +8,7 @@ def register_for_course(br_session, TERM_IN, SUBJECT, COURSE_ID, CRN):
     # ! WARN: Totally doesnt work
     return ""
 
-def get_options_for(br_session ,TERM_IN, SUBJECT, COURSE_ID):
+def get_options_for(br_session, TERM_IN, SUBJECT, COURSE_ID):
     if (SUBJECT, COURSE_ID) == ("TEST","101"):
         return dict({"111111":1})
     options = dict()

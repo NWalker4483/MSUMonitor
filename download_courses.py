@@ -1,4 +1,4 @@
-# ! NOTE: This process is painfully slow just set it and forget it
+# ! This process is painfully slow just set it and forget it
 import mechanize
 from urllib.parse import urlencode
 from bs4 import BeautifulSoup

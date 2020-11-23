@@ -13,11 +13,8 @@ def Clear(manager, cmd_str):
 def List(manager, cmd_str):
     return str(manager.getStudentNames())
     
-def Check(manager, cmd_str):
-    try:
-        return str("")
-    except:
-        return str("")
+def Kill(manager, cmd_str):
+    exit()
 
 def Remove(manager, cmd_str):
     manager.RemoveStudent(cmd_str.strip())
@@ -26,5 +23,5 @@ cmd_set = {
     "clear": Clear,
     "list": List,
     "remove": Remove,
-    "check": Check
+    "kill": Kill
 }

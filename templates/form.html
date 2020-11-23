@@ -91,7 +91,7 @@
             clear: both;
         }
     </style>
-<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script>
         $(function () {
             $("input[name=register]").click(function () {
@@ -102,9 +102,9 @@
                     $("input[name=password]").attr("disabled", "disabled");
                     $("input[name=alt_pin]").attr("disabled", "disabled");
                 }
-               
+
             });
-                
+
             function removeOptions(selectElement) {
                 var i, L = selectElement.options.length - 1;
                 for (i = L; i >= 1; i--) {
@@ -114,9 +114,9 @@
             var Courses = JSON.parse('{{ courses | tojson | safe}}');
 
             $.each(Courses, function (key, value) {
-                            $('#SUBJ').append(`<option value="${key}">
+                $('#SUBJ').append(`<option value="${key}">
                                 ${key} </option>`);
-                    });
+            });
             $("#SUBJ").change(function () {
                 var course_id = document.getElementById("COURSE_ID");
                 var crn = document.getElementById("CRN");
@@ -133,7 +133,7 @@
                     }
                 });
             });
-            
+
             $("#COURSE_ID").change(function () {
                 var crn = document.getElementById("CRN");
                 removeOptions(crn);
@@ -141,13 +141,16 @@
                     if (key == $("#SUBJ :selected").val()) {
                         $.each(value, function (ID, CRNS) {
                             if (ID == $("#COURSE_ID :selected").val()) {
-                                
+
                                 $.each(CRNS, function (CRN) {
                                     $('#CRN').append(
-                                    `<option value="${CRNS[CRN]}"> ${CRNS[CRN]} </option>`);});
+                                        `<option value="${CRNS[CRN]}"> ${CRNS[CRN]} </option>`);
+                                });
                             }
-                    });
-                }});});
+                        });
+                    }
+                });
+            });
         });
     </script>
 </head>
@@ -199,9 +202,13 @@
                                     </b>
                                 </p>
                                 <p>
-                                    By signing into for this software you are adding your name to a list of students that will be emailed whenever a course that you need has an open spot. 
-                                    Our goal is to help students get that last spot in a class when someone drops so we check for openings every <b>15 minutes</b> 24/7. In the future it will be adding the option to 
-                                    automatically register for a class when the spot is available but for now just enter your username and you'll receive an email once we've got your info stored.
+                                    By signing into for this software you are adding your name to a list of students
+                                    that will be emailed whenever a course that you need has an open spot.
+                                    Our goal is to help students get that last spot in a class when someone drops so we
+                                    check for openings every <b>15 minutes</b> 24/7. In the future it will be adding the
+                                    option to
+                                    automatically register for a class when the spot is available but for now just enter
+                                    your username and you'll receive an email once we've got your info stored.
                                 </p>
                                 <b>
                                     <font color="#FF0000">
@@ -217,33 +224,33 @@
 
                             <!---------------------------------------------------->
                             <form align="center" action="subscribe" method="post">
-                            <p>
-                                <label for="username">Morgan Username: Don't add '@morgan.edu'</label>
-                                <input type="text" name="username" required>
-                            </p>
-                            <p>
-                                <label for="register">Attempt to Register?</label>
-                                <input type="checkbox" name="register" disabled/>
-                            </p>
-                            <p>
-                                <input placeholder="Password" type="password" name="password" disabled="disabled">
-                                <input placeholder="Alternate Pin" type="text" name="alt_pin" disabled="disabled">
-                            </p>
-                            <p>
-                                <label for="SUBJ">Course Options</label>
-                                <select name="SUBJ" id="SUBJ" required>
-                                    <option disabled value="" selected >Select your option</option>
-                                </select>
-                                <select name="COURSE_ID" id="COURSE_ID" required>
-                                    <option disabled value="" selected >Select your option</option>
-                                </select>
-                                <select name="CRN" id="CRN" required>
-                                    <option disabled value="" selected >Select your option</option>
-                                </select>
-                            </p>
-                            <p>
-                                <input type="submit">
-                            </p>
+                                <p>
+                                    <label for="username">Morgan Username: Don't add '@morgan.edu'</label>
+                                    <input type="text" name="username" required>
+                                </p>
+                                <p>
+                                    <label for="register">Attempt to Register?</label>
+                                    <input type="checkbox" name="register" disabled />
+                                </p>
+                                <p>
+                                    <input placeholder="Password" type="password" name="password" disabled="disabled">
+                                    <input placeholder="Alternate Pin" type="text" name="alt_pin" disabled="disabled">
+                                </p>
+                                <p>
+                                    <label for="SUBJ">Course Options</label>
+                                    <select name="SUBJ" id="SUBJ" required>
+                                        <option disabled value="" selected>Select your option</option>
+                                    </select>
+                                    <select name="COURSE_ID" id="COURSE_ID" required>
+                                        <option disabled value="" selected>Select your option</option>
+                                    </select>
+                                    <select name="CRN" id="CRN" required>
+                                        <option disabled value="" selected>Select your option</option>
+                                    </select>
+                                </p>
+                                <p>
+                                    <input type="submit">
+                                </p>
                             </form>
 
                         </div>
