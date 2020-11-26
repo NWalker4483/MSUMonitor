@@ -5,8 +5,7 @@ from bs4 import BeautifulSoup
 CURRENT_TERM_ID = "202070"
 
 def register_for_course(br_session, TERM_IN, SUBJECT, COURSE_ID, CRN):
-    # ! WARN: Totally doesnt work
-    return ""
+    raise(NotImplementedError)
 
 def get_options_for(br_session, TERM_IN, SUBJECT, COURSE_ID):
     if (SUBJECT, COURSE_ID) == ("TEST","101"):
