@@ -103,7 +103,7 @@ When a new student is added to the system an instance of the ```Student``` class
 <br>
 
 ## System Models
-<img alt="lucidchart.png" src="lucidchart.png">
+<img src="images/Sequence diagram.png">
 
 ## System Evolution
 This system assumes that the structure of websis as of Oct 2020 does not significantly change since the system has no tools in place to accommodate for changing links or html layout. The use of a seperated API however does allow mitigate this risk. Since changes to the webpages structure only require that these high-level functions be reimplemented rather than the entire system. And though it is still missing several features before it can be considered stable, It is very important that these sections of the software remain separate as we have no official association with University and changes could happen at any time without notice.
