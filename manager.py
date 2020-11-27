@@ -7,6 +7,7 @@ from student import Student
 
 log = logging.getLogger("AutoRegistration.sub")
 
+
 class Manager:
     def __init__(self):
         # * Only one user is required to check any given course we use a master user for reliability
@@ -25,8 +26,10 @@ class Manager:
             for TERM_IN, SUBJECT, COURSE_ID, CRN in student.getNeededCourses().copy():
                 course = (TERM_IN, SUBJECT, COURSE_ID)
                 if course not in course_cache:
-                    course_cache[course] = websis.get_options_for(websis.LoginToWebsis(self.master)[1], TERM_IN, SUBJECT, COURSE_ID)
-                    log.info(f"Checking {TERM_IN} {SUBJECT} {COURSE_ID} for availabilities")
+                    course_cache[course] = websis.get_options_for(
+                        websis.LoginToWebsis(self.master)[1], TERM_IN, SUBJECT, COURSE_ID)
+                    log.info(
+                        f"Checking {TERM_IN} {SUBJECT} {COURSE_ID} for availabilities")
                 if course_cache[course].get(CRN, 0) > 0:
                     # If their password is not None
                     if student.getLoginInfo()[1] != None:
@@ -38,9 +41,12 @@ class Manager:
                         notify.notifyStudent(
                             student.username, TERM_IN, SUBJECT, COURSE_ID, CRN, 2)
                     if student.attempts[(TERM_IN, SUBJECT, COURSE_ID, CRN)] < 3:
-                        student.attempts[(TERM_IN, SUBJECT, COURSE_ID, CRN)] += 1 
-                    else: 
-                        self.RemoveCourseSubscribtion(TERM_IN, SUBJECT, COURSE_ID, CRN, student.username)
+                        student.attempts[(TERM_IN, SUBJECT,
+                                          COURSE_ID, CRN)] += 1
+                    else:
+                        self.RemoveCourseSubscribtion(
+                            TERM_IN, SUBJECT, COURSE_ID, CRN, student.username)
+
     def AddCourseSubscribtion(self, TERM_IN: str, SUBJECT: str, COURSE_ID: str, CRN: str, username: str):
         self.__students[username].addNeededCourse(
             TERM_IN, SUBJECT, COURSE_ID, CRN)
@@ -57,7 +63,8 @@ class Manager:
             if (len(self.__students[username].getNeededCourses()) != 0):
                 log.warning(
                     f"{username} was removed from the registry with {len(self.__students[username].getNeededCourses())} courses unfufilled")
-                courses_left = self.__students[username].getNeededCourses().copy()
+                courses_left = self.__students[username].getNeededCourses(
+                ).copy()
                 for TERM_IN, SUBJECT, COURSE_ID, CRN in courses_left:
                     self.__students[username].removeNeededCourse(
                         TERM_IN, SUBJECT, COURSE_ID, CRN, False)
@@ -71,5 +78,6 @@ class Manager:
 
     def hasInfoFor(self, username: str):
         return username in self.__students
+
     def getStudentNames(self):
         return [username for username in self.__students]

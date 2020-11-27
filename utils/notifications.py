@@ -68,6 +68,7 @@ def verifyEmail(email): # https://stackoverflow.com/questions/22233848/how-to-ve
     # finally:
     #     server.quit()
     return True
+    
 def notifyStudent(USERNAME, TERM_IN, SUBJECT, COURSE_ID, CRN, status=0):
     email = EmailThread()
     email.setup(USERNAME, TERM_IN, SUBJECT, COURSE_ID, CRN, status=status)

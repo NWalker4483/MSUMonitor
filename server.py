@@ -1,3 +1,5 @@
+import json
+import os
 from student import Student
 from manager import Manager
 import utils.websis as websis
@@ -6,7 +8,7 @@ import threading
 import auth
 import logging
 import sys
-from utils import dev 
+from utils import dev
 import time
 logging.basicConfig(filename='AutoRegistration.log', format='%(asctime)s - %(levelname)s: %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
@@ -21,9 +23,11 @@ app.logger.addHandler(handler)
 def HomePage():
     return render_template('form.html', courses=available_courses)
 
+
 @app.route('/modify', methods=['POST'])
 def ModifySubscriptions():
     global manager
+
 
 @app.route('/check', methods=['POST'])
 def CheckCourseSubscriptions():
@@ -36,29 +40,33 @@ def ProcessCourseSubscribtionForm():
     msg = ""
     MSU_USERNAME = request.form['username'].strip()
     MSU_PASSWORD = request.form.get('password', None)
-    ALT_PIN = request.form.get('alt_pin', None) # TODO: Add Constraints to html form 
+    # TODO: Add Constraints to html form
+    ALT_PIN = request.form.get('alt_pin', None)
     if ":" in MSU_USERNAME:
         try:
             cmd = MSU_USERNAME.split(":")
-            if cmd[0] == "admin" and cmd[1] == "123456": 
-                msg = dev.cmd_set[cmd[2]](manager,cmd[3])
+            if cmd[0] == "admin" and cmd[1] == "123456":
+                msg = dev.cmd_set[cmd[2]](manager, cmd[3])
         finally:
             return render_template('form.html', message=msg, courses=available_courses)
+
+    if not websis.ValidateEmail(MSU_USERNAME + "@morgan.edu"): return render_template('form.html', message="Email Invalid", courses=available_courses)
     
     SUBJECT = request.form["SUBJ"]
-    COURSE_ID = request.form['COURSE_ID'] 
-    CRN = request.form['CRN'] 
+    COURSE_ID = request.form['COURSE_ID']
+    CRN = request.form['CRN']
     new_student = Student(MSU_USERNAME, MSU_PASSWORD)
-    
+
     msg = f"Failed to process {MSU_USERNAME}. Please check your login info"
     if not manager.hasInfoFor(MSU_USERNAME):
-        if MSU_PASSWORD != None: # If the user is attempting to use the registration service
-            if websis.LoginToWebsis(new_student)[0]: # Validate Login Info
-                # Maybe Validate the Alt Pin 
+        if MSU_PASSWORD != None:  # If the user is attempting to use the registration service
+            if websis.LoginToWebsis(new_student)[0]:  # Validate Login Info
+                # Maybe Validate the Alt Pin
                 manager.AddStudent(new_student)
             else:
                 msg = "Websis Login Failed Check Info "
-                app.logger.error(f"Websis Login Failed Check Info for {MSU_USERNAME}")
+                app.logger.error(
+                    f"Websis Login Failed Check Info for {MSU_USERNAME}")
         else:
             manager.AddStudent(new_student)
 
@@ -76,8 +84,7 @@ def ScheduleWebsisCheck(t=60):
     manager.CheckCourseAvailability()
     threading.Timer(t, ScheduleWebsisCheck).start()
 
-import json
-import os
+
 # https://www.reddit.com/r/flask/comments/2i102e/af_how_to_open_static_file_specifically_json/
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 json_url = os.path.join(SITE_ROOT, 'static', 'courses.json')
@@ -92,6 +99,6 @@ if __name__ == "__main__":
         app.run(threaded=True)
     except Exception as e:
         print(e)
-    finally: # Save Manager
+    finally:  # Save Manager
         print("dfghjk")
         pass

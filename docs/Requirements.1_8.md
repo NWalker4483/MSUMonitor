@@ -3,7 +3,7 @@
 ## Preface 
 This documentation is intended for those that want to continue the development of the msu auto registration system. For those intending to use it a high-level explanation can be found in the [User Requirements]() Section.
 
-In its previous versions the system was only able to monitor availabilities for a single course at a time for a single student and notify them via the terminal. As will be described in this document this system can now monitor courses for an unlimited number of students and courses to then notify them via email of availabilities.
+In its previous versions the system was able to monitor an unlimited number of students and courses to then notify them via email of availabilities. However the internal workings of these operations were very in efficient and presented issues when long operations i.e sending emails were blocking the server
 
 ## Introduction
 At times finding availability for gen-ed or popular courses can be difficult while waiting for other students to drop the course this software is intended to provide an additional advantage to those who are willing to use it and automatically register for availabilities in their necessary classes. 
@@ -103,13 +103,13 @@ When a new student is added to the system an instance of the ```Student``` class
 <br>
 
 ## System Models
-<img alt="lucidchart.png" src="lucidchart.png">
+<img src="images/Sequence diagram.png">
 
 ## System Evolution
 This system assumes that the structure of websis as of Oct 2020 does not significantly change since the system has no tools in place to accommodate for changing links or html layout. The use of a seperated API however does allow mitigate this risk. Since changes to the webpages structure only require that these high-level functions be reimplemented rather than the entire system. And though it is still missing several features before it can be considered stable, It is very important that these sections of the software remain separate as we have no official association with University and changes could happen at any time without notice.
 
 We are also assuming that all development is being done through github. When a pull request to the master branch is closed, its code is synced to the glitch repo which updates the live site. While updating the glitch repo directly is an option it is not recommended as any future changes to the github will override these changes.
 ## Appendices
-* Not really sure how to write one of these
+* Still not really sure how to write one of these
 ## Index
 * Or these 
