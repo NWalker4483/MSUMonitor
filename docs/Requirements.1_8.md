@@ -1,21 +1,25 @@
 # [Auto Registration Documentation <sub>version 1.8</sub>](www.github.com/NWalker4483)
+
 #### by: Nile Walker,
-## Preface 
+
+## Preface
+
 This documentation is intended for those that want to continue the development of the msu monitor system. For those intending to use it, a high-level explanation can be found in the [User Requirements]() Section and in the User Manual.
 
 In its previous version the system was able to monitor an unlimited number of students and courses to then notify them via email of availabilities. However the internal workings of these operations were very inefficient and presented stability issues when long operations i.e sending emails were blocking the server. The front end design also allowed users to potentially input nonsense data into the course subscription form which caused the system to behave unreliably.
 
 As will be described in this document above the above problems have been solved but both still have room for improvement.
 
-This version has also abandoned the automatic registration option until the software is more stable and user data protections can be implemented since plain text password it will need to be kept.
+This version has also abandoned the automatic registration option until the software is more stable and user data protections can be implemented since its likely that plain text password it will need to be kept.
 
 ## Introduction
+
 At times finding availability for gen-ed or popular courses can be difficult while waiting for other students to drop the course this software is intended to provide an additional advantage to those who are willing to use it and automatically register for availabilities in their necessary classes. 
 
 The software works by creating a python based browser session and logging into websis. It then makes a list of all of the courses that it should check. And if an availability is there it will email the relevant students. All interactions with websites are done through a websis API built on top of existing modules.
 
-
 ## Glossary
+
 * *Websis* - The web-based tool that Morgan State University uses to manage student information and registration
 * *CRN* - A six digit identifier for any course available in a given term.
 * *Browser Session* - as a server-side storage of information that is desired to persist throughout the user's interaction with the web site or web application.
@@ -24,15 +28,17 @@ The software works by creating a python based browser session and logging into w
 * *TERM ID* - A value which websis uses to determine which semester a courses is in
 
 ## User Requirements Definition
-The auto registration system and provide to core services. Both of which are available through the site https://msu-register.glitch.me/
+
+The msu monitor system currently provides one core service. Which is available through the site https://msu-register.glitch.me/
+
 * Course subscription
+
   * Allows students to be added to a list of others that will be emailed whenever an availability is found in one of their courses. The service does not require the user provide a password.
   
-* Course registration
-  * In addition to notifying students of availabilities this service attempts to automatically register the student as soon as the availability is found. This service will require that the student provides a password and registration pin.
-
 ## System Architecture
-### Classes 
+
+### Classes
+
 ```Manager```
 
 The system is built and a publisher and subscriber type of approach.
@@ -46,12 +52,28 @@ When a new student is added to the system an instance of the ```Student``` class
 
 Email thread is a thread child class that allows us to send an email without causing the server to wait on it to be sent. It's purpose and design is simple it has a setup method which loads and fills in the template associated with whatever status flag it was given and a send method which frees the thread and sends the email. It's definition can be found in ```utils/notifications.py```.
 
-### Scripts 
+### Scripts
+
 ```download_courses.py```
 
 It turns out that checking whether or not a course exist on websis is a time intensive task. So in order to lighten the load done with websis we decided to download all available course options at the start of each term. Running the script can take upwards of 20 minutes but the script will generate a file called ```static/courses.json```. Which contains all available subjects courses and CRNs for a target term. This approach does introduce new limitations but these will be discussed in the [System Evolution]() section.
 
+### Tools
+
+```utils/dev.py```
+
+In order to make changes on the fly to student subscriptions I added a small set of tools that can be accessed through the front end by developers. It's implementation is simple insecure and should be removed/redone in any real production deployment.
+There are 4 commands which can be accessed by inputting ```admin:123456:${cmd_name}:${cmd_str}``` it into the MSU username field.
+
+```Note: cmd_str cannot be empty```
+
+* clear: Remove all students from the manager and returns how many students were in the manager before hand.
+* list: Return to list of the user names for every student in the system currently
+* kill: Kills the program forcing it to restart
+* remove: Removes the particular student from the manager when passed their user name as the cmd_str
+
 ## System Requirements Specification
+
 |||
 |------|------|
 |Function|Provide users a list of available courses|
