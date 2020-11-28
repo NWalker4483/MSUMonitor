@@ -1,21 +1,24 @@
+import re
 from urllib.parse import urlencode
 import mechanize
 from bs4 import BeautifulSoup
 
 CURRENT_TERM_ID = "202070"
 
+
 def register_for_course(br_session, TERM_IN, SUBJECT, COURSE_ID, CRN):
     raise(NotImplementedError)
 
+
 def get_options_for(br_session, TERM_IN, SUBJECT, COURSE_ID):
-    if (SUBJECT, COURSE_ID) == ("TEST","101"):
-        return dict({"111111":1})
+    if (SUBJECT, COURSE_ID) == ("TEST", "101"):
+        return dict({"111111": 1})
     options = dict()
     html = get_courses_page(br_session, TERM_IN, SUBJECT, COURSE_ID)
 
     soup = BeautifulSoup(html, features="html5lib")
     table = soup.find("table", attrs={
-                        "summary": "This layout table is used to present the sections found"})
+        "summary": "This layout table is used to present the sections found"})
     rows = table.find_all("tr")[2:]
 
     # * Needs to be cleaned/commented desperately
@@ -34,11 +37,12 @@ def get_options_for(br_session, TERM_IN, SUBJECT, COURSE_ID):
         Remaining, CRN = current_course_info[0], current_course_info[1]
         try:
             options[CRN] = int(Remaining)
-        except ValueError:# Remaining == C or NR
-            options[CRN] = 0 
+        except ValueError:  # Remaining == C or NR
+            options[CRN] = 0
         ###########################################
-  
+
     return options
+
 
 def get_courses_page(br_session, TERM_IN, SUBJECT, COURSE_ID) -> str:  # html
     # br_session must be logged in
@@ -59,13 +63,15 @@ def get_courses_page(br_session, TERM_IN, SUBJECT, COURSE_ID) -> str:  # html
     res = br_session.open(full_url)
     return res.read()
 
+
 def WebsisSessionIsActive(sess: mechanize.Browser) -> bool:  # NOTE Not Done
-    # Check wether a user is properly logged in
+    # * Check wether a user is properly logged in
+    # ! Not Implemented
     try:
         return True
     except:
-        pass
-    return False
+        return False
+
 
 def LoginToWebsis(student):
     login_url = "https://lbapp1nprod.morgan.edu/ssomanager/c/SSB"
@@ -79,22 +85,25 @@ def LoginToWebsis(student):
         return True, br
     except Exception as e:
         return False, br
-import re 
-  
-# Make a regular expression 
-# for validating an Email 
+
+
+# Make a regular expression
+# for validating an Email
 regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
-# for custom mails use: '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$' 
-      
-# Define a function for 
-# for validating an Email 
-def ValidateEmail(email):  
-    # pass the regular expression 
-    # and the string in search() method 
-    if(re.search(regex,email)):  
-        return True 
-    else:  
-        return False 
-      
+# for custom mails use: '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
+
+# Define a function for
+# for validating an Email
+
+
+def ValidateEmail(email):
+    # pass the regular expression
+    # and the string in search() method
+    if(re.search(regex, email)):
+        return True
+    else:
+        return False
+
+
 if __name__ == "__main__":
     pass

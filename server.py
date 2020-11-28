@@ -27,11 +27,13 @@ def HomePage():
 @app.route('/modify', methods=['POST'])
 def ModifySubscriptions():
     global manager
+    raise(NotImplementedError)
 
 
 @app.route('/check', methods=['POST'])
 def CheckCourseSubscriptions():
     global manager
+    raise(NotImplementedError)
 
 
 @app.route('/subscribe', methods=['POST'])
@@ -50,8 +52,9 @@ def ProcessCourseSubscribtionForm():
         finally:
             return render_template('form.html', message=msg, courses=available_courses)
 
-    if not websis.ValidateEmail(MSU_USERNAME + "@morgan.edu"): return render_template('form.html', message="Email Invalid", courses=available_courses)
-    
+    if not websis.ValidateEmail(MSU_USERNAME + "@morgan.edu"):
+        return render_template('form.html', message="Email Invalid", courses=available_courses)
+
     SUBJECT = request.form["SUBJ"]
     COURSE_ID = request.form['COURSE_ID']
     CRN = request.form['CRN']
