@@ -2,8 +2,10 @@
 
 Automatically monitor and register for courses when availabilities arise
 ## Setup
-For the most recent version of the code please run
-```git clone https://github.com/NWalker4483/MSUMonitor```
+For the most recent version of the code please run ...
+```bash 
+git clone https://github.com/NWalker4483/MSUMonitor
+```
 
 To deploy locally create an ```auth.py``` in the root dir with the contents ...
 
@@ -19,7 +21,7 @@ password = "*********"
 
 A production deployment can also be accessed through [msu-register.glitch.me](https://msu-register.glitch.me)
 ## Usage 
-For frontend use instructions please refer to the user manual in the [docs](docs/) folder
+* For frontend use instructions please refer to the user manual in the [docs](docs/) folder
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
