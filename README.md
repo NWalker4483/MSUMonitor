@@ -2,31 +2,29 @@
 
 Automatically monitor and register for courses when availabilities arise
 ## Setup
+For the most recent version of the code please run
+```git clone https://github.com/NWalker4483/MSUMonitor```
 
 To deploy locally create an ```auth.py``` in the root dir with the contents ...
 
 ``` python
-# Provide your own Websis Login
+# Provide your own Websis Student Login
 username = "*********"
 password = "*********"
 ```
 * Run ```python3 -m pip install -r requirements.txt```
+## Deployment
 * Run the start.sh script or run ```python3 server.py```
 * Go to [localhost:5000](http://localhost:5000) in your choice of browser.
 
 A production deployment can also be accessed through [msu-register.glitch.me](https://msu-register.glitch.me)
-
+## Usage 
 For frontend use instructions please refer to the user manual in the [docs](docs/) folder
-# Tasks
-## General
-* Implement Check ```WebsisSessionIsActive``` Function to check logins
-* Implement course registration in ```register_for_course``` Function
-* Implement more automated system and interface testing
-* Check that all important operations/changes are logged (Use your personal descretion for what is important)
-## Darius
-* Set up somewhere for users to email the development team
-## Nile
-* Implement something to protect user data from program crashes
-## Charnelle 
-* Give users the option to remove/moniter a course subscription manually 
-* 
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
