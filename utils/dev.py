@@ -12,6 +12,7 @@ def Clear(manager, cmd_str):
     return f"Removed all {num} students from the system"
 
 
+
 def List(manager, cmd_str):
     return str(manager.getStudentNames())
 
